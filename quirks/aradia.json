@@ -1,10 +1,5 @@
 {
     "name": "aradia",
-    "preText": "AA: ",
-    "color": {
-        "r": 161,
-        "g": 0,
-        "b": 0,
-        "a": 255
-    }
+    "id": "AA: ",
+    "color": "#A10000"
 }

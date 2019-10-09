@@ -1,12 +1,7 @@
 {
     "name": "gamzee",
-    "preText": "TC: ",
-    "color": {
-        "r": 43,
-        "g": 0,
-        "b": 87,
-        "a": 255
-    },
+    "id": "TC: ",
+    "color": "#2B0057",
     "quirks": [
         "function()\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\nif str.isalpha(char) then cap = not cap end\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",
         "function()\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\ncap = not cap\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",

@@ -60,7 +60,7 @@ def_scope = {
 }
 
 local sethook = function (func, limit)
-    debug.sethook(func, '', limit or 1000000)
+    debug.sethook(func, '', limit or 100000000)
 end
 
 local removehook = function ()

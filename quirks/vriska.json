@@ -1,10 +1,5 @@
 {
     "name": "vriska",
-    "preText": "AG: ",
-    "color": {
-        "r": 0,
-        "g": 86,
-        "b": 130,
-        "a": 255
-    }
+    "id": "AG: ",
+    "color": "#005682"
 }

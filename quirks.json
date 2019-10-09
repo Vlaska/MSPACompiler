@@ -1,0 +1,134 @@
+[
+    {
+        "name": "aradia",
+        "id": "AA: ",
+        "color": "#A10000"
+    },
+    {
+        "name": "dave",
+        "id": "TG: ",
+        "color": "#E00707"
+    },
+    {
+        "name": "default",
+        "color": "#000000"
+    },
+    {
+        "name": "dirk",
+        "id": "TT: ",
+        "color": "#F2A402"
+    },
+    {
+        "name": "equius",
+        "id": "CT: ",
+        "color": "#000056"
+    },
+    {
+        "name": "eridan",
+        "id": "CA: ",
+        "color": "#6A006A"
+    },
+    {
+        "name": "feferi",
+        "id": "CC: ",
+        "color": "#77003C"
+    },
+    {
+        "name": "gamzee",
+        "id": "TC: ",
+        "color": "#2B0057",
+        "quirks": [
+            "function()\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\nif str.isalpha(char) then cap = not cap end\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",
+            "function()\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\ncap = not cap\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",
+            "function()\nf3_cap = not f3_cap\nreturn emot.sub(':o)', (not f3_cap) and str.upper(input) or str.lower(input))\nend",
+            "function()\nreturn emot.sub(':o)', str.isupper(input[1]) and str.upper(input) or str.lower(input))\nend"
+        ],
+        "register": {
+            "regex": {
+                "emot": ":(?:o|O)\\)"
+            },
+            "vars": "math.randomseed(time()); math.random(); math.random(); f3_cap = math.random(0, 5) <= 2"
+        }
+    },
+    {
+        "name": "hal",
+        "id": "TT: ",
+        "color": "#E00707"
+    },
+    {
+        "name": "jade",
+        "id": "GC: ",
+        "color": "#4AC925"
+    },
+    {
+        "name": "jake",
+        "id": "GT: ",
+        "color": "#1F9400"
+    },
+    {
+        "name": "jane",
+        "id": "GG: ",
+        "color": "#00D5F2"
+    },
+    {
+        "name": "john",
+        "id": "EB: ",
+        "color": "#0715CD"
+    },
+    {
+        "name": "kanaya",
+        "id": "GA: ",
+        "color": "#008141"
+    },
+    {
+        "name": "karkat",
+        "id": "CG: ",
+        "color": "#626262",
+        "quirks": "function () return str.upper(input) end"
+    },
+    {
+        "name": "lilhal",
+        "id": "TT: ",
+        "color": "#F2A400"
+    },
+    {
+        "name": "nepeta",
+        "id": "AG: ",
+        "color": "#416600"
+    },
+    {
+        "name": "rose",
+        "id": "TT: ",
+        "color": "#B536DA"
+    },
+    {
+        "name": "roxy",
+        "id": "TG: ",
+        "color": "#FF6FF2"
+    },
+    {
+        "name": "scratch",
+        "color": "#FFFFFF",
+        "highlight-bg": "#03460E"
+    },
+    {
+        "name": "sollux",
+        "id": "TA: ",
+        "color": "#A1A100"
+    },
+    {
+        "name": "tavros",
+        "id": "AT: ",
+        "color": "#A15000"
+    },
+    {
+        "name": "terezi",
+        "id": "GC: ",
+        "color": "#008282"
+    },
+    {
+        "name": "vriska",
+        "id": "AG: ",
+        "color": "#005682"
+    }
+]

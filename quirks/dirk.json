@@ -1,10 +1,5 @@
 {
     "name": "dirk",
-    "preText": "TT: ",
-    "color": {
-        "r": 242,
-        "g": 164,
-        "b": 0,
-        "a": 255
-    }
+    "id": "TT: ",
+    "color": "#F2A402"
 }

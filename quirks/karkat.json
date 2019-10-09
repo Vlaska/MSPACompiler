@@ -1,11 +1,6 @@
 {
     "name": "karkat",
-    "preText": "CG: ",
-    "color": {
-        "r": 98,
-        "g": 98,
-        "b": 98,
-        "a": 255
-    },
+    "id": "CG: ",
+    "color": "#626262",
     "quirks": "function () return str.upper(input) end"
 }

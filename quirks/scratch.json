@@ -1,15 +1,5 @@
 {
     "name": "scratch",
-    "color": {
-        "r": 255,
-        "g": 255,
-        "b": 255,
-        "a": 255
-    },
-    "highlight-bg": {
-        "r": 3,
-        "g": 70,
-        "b": 14,
-        "a": 255
-    }
+    "color": "#FFFFFF",
+    "highlight-bg": "#03460E"
 }

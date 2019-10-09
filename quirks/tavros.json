@@ -1,10 +1,5 @@
 {
     "name": "tavros",
-    "preText": "AT: ",
-    "color": {
-        "r": 161,
-        "g": 80,
-        "b": 0,
-        "a": 255
-    }
+    "id": "AT: ",
+    "color": "#A15000"
 }

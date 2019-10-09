@@ -1,10 +1,5 @@
 {
     "name": "kanaya",
-    "preText": "GA: ",
-    "color": {
-        "r": 0,
-        "g": 129,
-        "b": 65,
-        "a": 255
-    }
+    "id": "GA: ",
+    "color": "#008141"
 }

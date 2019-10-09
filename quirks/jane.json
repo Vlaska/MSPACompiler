@@ -1,10 +1,5 @@
 {
     "name": "jane",
-    "preText": "GG: ",
-    "color": {
-        "r": 0,
-        "g": 213,
-        "b": 242,
-        "a": 255
-    }
+    "id": "GG: ",
+    "color": "#00D5F2"
 }

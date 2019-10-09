@@ -1,10 +1,5 @@
 {
     "name": "roxy",
-    "preText": "TG: ",
-    "color": {
-        "r": 255,
-        "g": 111,
-        "b": 242,
-        "a": 255
-    }
+    "id": "TG: ",
+    "color": "#FF6FF2"
 }

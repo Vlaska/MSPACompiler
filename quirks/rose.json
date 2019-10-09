@@ -1,10 +1,5 @@
 {
     "name": "rose",
-    "preText": "TT: ",
-    "color": {
-        "r": 181,
-        "g": 54,
-        "b": 218,
-        "a": 255
-    }
+    "id": "TT: ",
+    "color": "#B536DA"
 }

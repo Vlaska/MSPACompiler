@@ -1,10 +1,5 @@
 {
     "name": "nepeta",
-    "preText": "AG: ",
-    "color": {
-        "r": 65,
-        "g": 102,
-        "b": 0,
-        "a": 255
-    }
+    "id": "AG: ",
+    "color": "#416600"
 }

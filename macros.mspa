@@ -1,0 +1,27 @@
+<def< john >: john, id<[EB]>>
+<def< rose >: rose, id<[TT]>>
+<def< dave >: dave, id<[TG]>>
+<def< jade >: jade, id<[GG]>>
+<def< jane >: jane, id<[GG]>>
+<def< roxy >: roxy, id<[TG]>>
+<def< dirk >: dirk, id<[TT]>>
+<def< jake >: jake, id<[GT]>>
+
+<def< aradia >: aradia, id<[AA]>>
+<def< tavros >: tavros, id<[AT]>>
+<def< sollux >: sollux, id<[TA]>>
+<def< karkat >: karkat, id<[CC]>>
+<def< nepeta >: nepeta, id<[AC]>>
+<def< kanaya >: kanaya, id<[GA]>>
+<def< terezi >: terezi, id<[GC]>>
+<def< vriska >: vriska, id<[AG]>>
+<def< equius >: equius, id<[CT]>>
+<def< gamzee >: gamzee, id<[TC]>>
+<def< eridan >: eridan, id<[CA]>>
+<def< feferi >: feferi, id<[CC]>>
+
+<def< calliope >: calliope, id<[UU]>>
+<def< caliborn >: post_calliope, id<[UU]>>
+
+<def< _john >: john, id<[GT]>>
+<def< _caliborn >: pre_caliborn, id<[uu]>>

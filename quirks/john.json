@@ -1,10 +1,5 @@
 {
     "name": "john",
-    "preText": "EB: ",
-    "color": {
-        "r": 7,
-        "g": 21,
-        "b": 205,
-        "a": 255
-    }
+    "id": "EB: ",
+    "color": "#0715CD"
 }

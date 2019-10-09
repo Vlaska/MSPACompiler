@@ -1,10 +1,27 @@
-import lupa
-import logging
 import json
+import logging
+import os
 import re
 
+import lupa
 
-class Quirk:
+
+def findQuirkbase(path='./'):
+    name = 'quirkbase.lua'
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+
+
+def getQuirkbasePath():
+    path = os.environ.get('quirkbase', None) or findQuirkbase()
+    return re.sub('\\\\|/', '.', re.sub('\./|\.lua', '', path))
+
+
+NOOP = 'function (...) end'
+
+
+class QuirkSetter:
     def __init__(self):
         self.lua = lupa.LuaRuntime(
             unpack_returned_tuples=True,
@@ -13,15 +30,11 @@ class Quirk:
         )
 
         try:
-            self.lua.eval('require "quirkbase"')
+            self.lua.eval(f'require "{getQuirkbasePath()}"')
         except lupa.LuaSyntaxError:
-            raise Exception('Error while importing "quirkbase.lua"')
-
-        # def __iter(x):
-            # if type(x) != str:
-            # raise Exception("Only string can be iterated!")
-
-            # return self.lua.globals().python.iter(list(str(x)))
+            raise Exception('Error while importing "quirkbase.lua".')
+        except lupa.LuaError:
+            raise Exception('Module "quirkbase.lua" could not be found.')
 
         self.lua.globals().def_scope.str = {
             'capitalize': str.capitalize,
@@ -62,9 +75,8 @@ class Quirk:
         }
 
         self.lua.globals().def_scope.re = re
-        self.lua.globals().def_scope.iter = lambda x: self.lua.globals().python.iter(list(str(x)))
-        # self.lua.globals().def_scope.iter = __iter
-        # self.lua.globals().def_scope.iter = lambda x: self.lua.globals().python.iter(list(x))
+        self.lua.globals().def_scope.iter =\
+            lambda x: self.lua.globals().python.iter(list(str(x)))
 
         self.compileQuirk = self.lua.globals().compileQuirk
         self.sandbox = self.lua.globals().sandbox
@@ -90,84 +102,65 @@ class Quirk:
         if t == str:
             execute(self.compileQuirk, quirks, self.quirks[name])
         elif t == list:
-            for i in range(len(quirks)):
-                execute(self.compileQuirk, quirks[i], self.quirks[name], i + 1)
+            if len(quirks):
+                for i in range(len(quirks)):
+                    execute(self.compileQuirk, quirks[i], self.quirks[name], i + 1)
         elif t == dict:
             for k, v in quirks.items():
                 execute(self.compileQuirk, v, self.quirks[name], k)
 
-    def addQuirks(self, quirks):
-        assert type(quirks) == dict, 'Incorect value'
-        # if type(quirks) != dict:
-        #     raise Exception('Incorrect value')
-
-        for k, v in quirks.items():
-            self.addQuirk(k, v)
+        # execute(self.compileQuirk, NOOP, 0)
 
     def register(self, name, content):
         if name not in self.quirks:
             self.quirks[name] = self.getNewScope()
 
-        t = type(content)
-        if t == dict:
-            self.compileRegex(name, content.pop('regex', None))
+        assert type(content) is dict, 'Content to register must be provided '\
+            'as dictionary'
 
-            for k, v in content.items():
-                self.scopeReg(v, self.quirks[name], k)
-        else:
-            raise Exception(
-                'Content to register must be provided as dictionary'
-            )
+        self.compileRegex(name, content.pop('regex', None))
+
+        for k, v in content.items():
+            self.scopeReg(v, self.quirks[name], k)
 
     def compileRegex(self, name, regex):
         if regex == None:
             return
-        elif type(regex) != dict:
-            raise Exception('Regex must be a dictionary')
+
+        assert type(regex) is dict, 'Regex must be a dictionary'
 
         for k, v in regex.items():
-            if type(v) != str:
-                raise Exception('Regex formula must be a string')
+            assert type(v) is str, 'Regex formula must be a string'
             self.quirks[name][k] = re.compile(v)
 
     def loadFromDict(self, _dict):
-        if 'register' in _dict:
-            self.register(_dict['name'], _dict['register'])
-        self.addQuirk(_dict['name'], _dict['quirks'])
+        assert type(_dict) is dict, 'Incorrect input'
+        if 'quirks' in _dict:
+            if 'register' in _dict:
+                self.register(_dict['name'], _dict['register'])
+            self.addQuirk(_dict['name'], _dict['quirks'])
+
+    def loadFromList(self, _list):
+        assert type(_list) is list, 'Incorrect input'
+
+        for quirk in _list:
+            self.loadFromDict(quirk)
 
     def processText(self, text, name, quirk=None):
         if name not in self.quirks:
-            raise Exception(f'There is no quirk named "{name}"')
+            return text
 
         if quirk:
-            if quirk not in self.quirks[name]['quirks']:
-                raise Exception(f'There is no quirk function named "{quirk}"')
+            assert quirk in self.quirks[name][
+                'quirks'], f'There is no quirk function named "{quirk}"'
         else:
             quirk = next(iter(self.quirks[name]['quirks']))
 
+        out = []
         try:
-            return self.sandbox(text, self.quirks[name], quirk)
+            for line in text.splitlines():
+                out.append(self.sandbox(line, self.quirks[name], quirk))
+            return '\n'.join(out)
         except lupa.LuaError as e:
             self.logger.exception('Error: ')
             raise e
-
-
-with open('./quirks/gamzee.json', 'r', encoding='utf-8') as f:
-    t = json.load(f)
-
-# print(list(q.quirks['karkat'].quirks))
-q = Quirk()
-q.loadFromDict(t)
-
-with open('./quirks/karkat.json', 'r', encoding='utf-8') as f:
-    t = json.load(f)
-
-q.loadFromDict(t)
-
-# print(q.parseText("to jest testowy tekst :o)", 'gamzee'))
-print(q.processText("To jest testowy tekst numer 1 :o)", 'gamzee'))
-print(q.processText("to jest testowy tekst numer 2 :o)", 'gamzee'))
-print(q.processText("mogę w locie zmienić styl pisania autora", 'gamzee', 3))
-print(q.processText("oraz zapamiętać wartości z poprzednich lini", 'gamzee', 3))
-print(q.processText("tak jak teraz", 'gamzee', 3))
-# print(q.parseText("mogę też zmienić autora tekstu, a formatowanie dostosuje się do tego", 'karkat'))
