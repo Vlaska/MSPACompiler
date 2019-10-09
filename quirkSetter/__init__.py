@@ -1,24 +1,10 @@
 import json
 import logging
-import os
 import re
 
 import lupa
 
-
-def findQuirkbase(path='./'):
-    name = 'quirkbase.lua'
-    for root, dirs, files in os.walk(path):
-        if name in files:
-            return os.path.join(root, name)
-
-
-def getQuirkbasePath():
-    path = os.environ.get('quirkbase', None) or findQuirkbase()
-    return re.sub('\\\\|/', '.', re.sub('\./|\.lua', '', path))
-
-
-NOOP = 'function (...) end'
+from .modules import strong, quirkbase
 
 
 class QuirkSetter:
@@ -30,11 +16,10 @@ class QuirkSetter:
         )
 
         try:
-            self.lua.eval(f'require "{getQuirkbasePath()}"')
+            self.lua.execute(strong)
+            self.lua.execute(quirkbase)
         except lupa.LuaSyntaxError:
-            raise Exception('Error while importing "quirkbase.lua".')
-        except lupa.LuaError:
-            raise Exception('Module "quirkbase.lua" could not be found.')
+            raise Exception('Error while importing base functions.')
 
         self.lua.globals().def_scope.str = {
             'capitalize': str.capitalize,
@@ -108,8 +93,6 @@ class QuirkSetter:
         elif t == dict:
             for k, v in quirks.items():
                 execute(self.compileQuirk, v, self.quirks[name], k)
-
-        # execute(self.compileQuirk, NOOP, 0)
 
     def register(self, name, content):
         if name not in self.quirks:
