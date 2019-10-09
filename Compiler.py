@@ -7,7 +7,7 @@ from Parser import generateDict
 
 
 class TextCompiler:
-    def __init__(self, quirks=None, macros=None):
+    def __init__(self, quirks: list=None, macros: str=None):
         self.quirkSetter = QuirkSetter()
         self.quirks = {
             'default': {
@@ -96,6 +96,9 @@ class TextCompiler:
 
     def compileTree(self, tree):
         out = []
+
+        if not tree:
+            return ''
 
         for node in tree:
             if type(node) is str:
