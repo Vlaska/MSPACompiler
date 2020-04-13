@@ -38,8 +38,8 @@
         "id": "TC: ",
         "color": "#2B0057",
         "quirks": [
-            "function()\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\nif str.isalpha(char) then cap = not cap end\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",
-            "function()\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\ncap = not cap\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",
+            "function()\nif #input == 0 then return input end\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\nif str.isalpha(char) then cap = not cap end\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",
+            "function()\nif #input == 0 then return input end\nlocal out = {}\nlocal cap = str.isupper(input[1])\nfor char in iter(input) do\ntable.insert(out, cap and str.upper(char) or str.lower(char))\ncap = not cap\nend\nreturn emot.sub(':o)', table.concat(out, ''))\nend",
             "function()\nf3_cap = not f3_cap\nreturn emot.sub(':o)', (not f3_cap) and str.upper(input) or str.lower(input))\nend",
             "function()\nreturn emot.sub(':o)', str.isupper(input[1]) and str.upper(input) or str.lower(input))\nend"
         ],
