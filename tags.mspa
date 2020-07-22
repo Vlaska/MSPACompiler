@@ -109,7 +109,7 @@
                 cap = not cap
             end
         end
-        return emot.sub(':o)', table.concat(out, ''))
+        return regex.emot.sub(':o)', table.concat(out, ''))
     end]
     [defcode: function(text)
         if #text == 0 then
@@ -122,14 +122,14 @@
             table.insert(out, cap and str.upper(char) or str.lower(char))
             cap = not cap
         end
-        return emot.sub(':o)', table.concat(out, ''))
+        return regex.emot.sub(':o)', table.concat(out, ''))
     end]
     [defcode: function(text)
         if #text == 0 then
             return text
         end
 
-        return emot.sub(':o)', str.isupper(input:sub(1, 1)) and str.upper(input) or str.lower(input))
+        return regex.emot.sub(':o)', str.isupper(input:sub(1, 1)) and str.upper(input) or str.lower(input))
     end]
     [css :color: #2B0057;]
 ]
