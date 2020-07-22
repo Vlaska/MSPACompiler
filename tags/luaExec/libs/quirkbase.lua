@@ -100,14 +100,14 @@ function compileCode(code, scope)
         error('Execution error: ' .. (retVal or ''))
     end
 
-    return function(text, newScope)
+    return function(text, ...)
         local removehook = removehook
         local sethook = sethook
         local timeout = timeout
         local error = error
         local assert = assert
 
-        local _ENV = newScope and newScope or scope
+        local _ENV = scope
 
         output = nil
         sethook(timeout)

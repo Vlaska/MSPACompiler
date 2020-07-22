@@ -18,5 +18,5 @@ class CodeTag(InnerBlock):
         idx = int(t)
         if not (0 < idx < len(codes)):
             idx = 0
-
-        return codes[idx](text.format(**arguments, text=text))
+        t = text.format(**arguments, text=text)
+        return codes[idx](t)
