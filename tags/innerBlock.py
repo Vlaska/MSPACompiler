@@ -1,0 +1,2 @@
+class InnerBlock:
+    pass

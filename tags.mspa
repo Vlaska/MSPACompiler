@@ -1,0 +1,191 @@
+[defines:
+
+[[define[html, [], [safe]]: [text :{text}]
+[[define[selfClosingHtmlTag, [name=div, html_class, style], [safe]]: [text :<{name}[if[html_class]: class="{html_class}"][if[style]: style="{style}"]>{text}]
+[[define[htmlTag, [], [extends=selfClosingHtmlTag]]: [text :{text}</{name}>]
+[define[url, [href="#", name="a"], [extends=htmlTag, unsafe]]]
+[define[img, [src="", name="img"], [extends=selfClosingHtmlTag]]]
+[define[div, [name="div"], [extends=htmlTag]]]
+[define[p, [name="p"], [extends=htmlTag]]]
+[define[span, [name="span"], [extends=htmlTag]]]
+[define[chat, [html_class="chat"], [extends=div, splitlines]]: [text :<p>{text}</p>] [replace[["\n"="<br>"]]]]
+[[macro[log=chat]
+
+[defcode[upper]: function (text) return str.upper(text) end]
+[defcode[lower]: function (text) return str.upper(text) end]
+
+[define[chatText, [id], [extends=span, splitlines, unsafe]]: [text:[if[id]:{id}: ]{text}]]
+
+[define[john, [id=John, html_class=john], [extends=chatText]]: [css :color: #0715CD;]]
+[define[rose, [id=Rose, html_class=rose], [extends=chatText]]: [css :color: #B536DA;]]
+[define[dave, [id=Dave, html_class=dave], [extends=chatText]]: [css :color: #E00707;]]
+[define[jade, [id=Jade, html_class=jade], [extends=chatText]]: [css :color: #4AC925;]]
+[define[EB, [id=EB], [extends=john]]]
+[define[GT, [id=GT], [extends=john]]]
+[define[TT, [id=TT], [extends=rose]]]
+[define[TG, [id=TG], [extends=dave]]]
+[define[GC, [id=GC], [extends=jade]]]
+
+[[define[jane, [id=Jane, html_class=jane], [extends=chatText]]: [css :color: #00D5F2;]
+[[define[jake, [id=Jake, html_class=jake], [extends=chatText]]: [css :color: #1F9400;]
+[[define[roxy, [id=Roxy, html_class=roxy], [extends=chatText]]: [css :color: #FF6FF2;]
+[[define[dirk, [id=Dirk, html_class=dirk], [extends=chatText]]: [css :color: #F2A402;]
+[[define[GCJane, [id=GC], [extends=jane]]
+[[define[GTJake, [id=GT], [extends=jake]]
+[[define[TGRoxy, [id=TG], [extends=roxy]]
+[[define[TTDirk, [id=TT], [extends=dirk]]
+
+[define[quirkText, [quirk=1], [extends=chatText]]: [text :[code[quirk]:{text}]]]
+
+[define[aradia, [quirk, id=Aradia, html_class=aradia], [extends=quirkText]]: 
+    [defcode: function(text)
+        text = lower(text)
+        return re.sub('o', '0', text)
+    end]
+    [defcode:lower]
+    [css :color: #A10000;]
+]
+[define[tavros, [quirk, id=Tavros, html_class=tavros], [extends=quirkText]]: 
+    [defcode: function(text)
+        return str.swapcase(str.title(str.lower(text)))
+    end]
+    [css :color: #A15000;]
+]
+[define[sollux, [quirk, id=TA, html_class=sollux], [extends=quirkText]]: 
+    [defcode: function(text)
+        return re.sub('i', 'ii', (re.sub('s', '2', text)))
+    end]
+    [defcode: function(text)
+        return re.sub('o', '0', text)
+    end]
+    [css :color: #A1A100;]
+]
+[define[karkat, [quirk, id=Karkat, html_class=karkat], [extends=quirkText]]: [defcode: upper] [css :color: #626262;]]
+[define[nepeta, [quirk, id=Nepeta, html_class=nepeta], [extends=quirkText]]: 
+    [defcode: function(text)
+        return ":33 < " + re.sub('ee', '33', text, {flags=re.IGNORECASE})
+    end]
+    [css :color: #416600;]
+]
+[define[kanaya, [quirk, id=Kanaya, html_class=kanaya], [extends=quirkText]]: 
+    [defcode: function(text)
+        return str.title(str.lower(text))
+    end]
+    [css :color: #008141;]
+]
+[define[terezi, [quirk, id=Terezi, html_class=terezi], [extends=quirkText]]:
+    [defcode: function(text)
+        return str.upper(re.sub('i', '1', re.sub('e', '3', re.sub('a', '4', str.lower(text)))))
+    end]
+    [defcode: function(text)
+        return re.sub('i', '1', re.sub('e', '3', re.sub('a', '4', str.lower(text))))
+    end]
+    [css :color: #008282;]
+]
+[define[vriska, [quirk, id=Vriska, html_class=vriska], [extends=quirkText]]: 
+    [defcode: function(text)
+        return re.sub('b', '8', text)
+    end]
+    [css :color: #005682;]
+]
+[define[equius, [quirk, id=Equius, html_class=equius], [extends=quirkText]]: 
+    [defcode: function(text)
+        return 'D --> ' + str.replace(text, 'ks', '%')
+    end]
+    [css :color: #000056;]
+]
+[define[gamzee, [quirk, id=Gamzee, html_class=gamzee], [extends=quirkText]]:
+    [regex[emot]::(?:o|O\)\\)]
+    [defcode: function(text)
+        if #text == 0 then
+            return text
+        end
+
+        local out = {}
+        local cap = str.isupper(text:sub(1, 1))
+        for char in iter(text) do
+            table.insert(out, cap and str.upper(char) or str.lower(char))
+            if str.isalpha(char) then
+                cap = not cap
+            end
+        end
+        return emot.sub(':o)', table.concat(out, ''))
+    end]
+    [defcode: function(text)
+        if #text == 0 then
+            return text
+        end
+
+        local out = {}
+        local cap = str.isupper(text:sub(1, 1))
+        for char in iter(text) do
+            table.insert(out, cap and str.upper(char) or str.lower(char))
+            cap = not cap
+        end
+        return emot.sub(':o)', table.concat(out, ''))
+    end]
+    [defcode: function(text)
+        if #text == 0 then
+            return text
+        end
+
+        return emot.sub(':o)', str.isupper(input:sub(1, 1)) and str.upper(input) or str.lower(input))
+    end]
+    [css :color: #2B0057;]
+]
+[define[eridan, [quirk, id=Eridan, html_class=eridan], [extends=quirkText]]:
+    [defcode: function(text)
+        return str.replace(str.replace('w', 'ww', text), 'ł', 'łł')
+    end]]
+[define[feferi, [quirk, id=Feferi, html_class=feferi], [extends=quirkText]]:
+    [regex[h]:(h|H)]
+    [defcode: function(text) 
+        return str.replace(h.sub(')(', text), 'E', '-E')
+    end]
+    [css :color: #77003C;]    
+]
+
+[define[AA, [quirk, id=AA, html_class=aradia], [extends=aradia]]]
+[define[AT, [quirk, id=AT, html_class=tavros], [extends=tavros]]]
+[define[TA, [quirk, id=TA, html_class=sollux], [extends=sollux]]]
+[define[CG, [quirk, id=CG, html_class=karkat], [extends=karkat]]]
+[define[AC, [quirk, id=AC, html_class=nepeta], [extends=nepeta]]]
+[define[GA, [quirk, id=GA, html_class=kanaya], [extends=kanaya]]]
+[define[GC, [quirk, id=GC, html_class=terezi], [extends=terezi]]]
+[define[AG, [quirk, id=AG, html_class=vriska], [extends=vriska]]]
+[define[CT, [quirk, id=CT, html_class=equius], [extends=equius]]]
+[define[TC, [quirk, id=TC, html_class=gamzee], [extends=gamzee]]]
+[define[CA, [quirk, id=CA, html_class=eridan], [extends=eridan]]]
+[define[CC, [quirk, id=CC, html_class=feferi], [extends=feferi]]]
+
+
+[define[chatNotification, [name, id, html_class], [safe]]: [text:{name} <span class="{html_class}">{name} \[{id}\]</span>]]
+
+[define[EBc, [name=ectoBiologist, id=EB, html_class=john], [extends=chatNotification]]]
+[define[GTc, [name=ghostyTrickster, id=GT, html_class=john], [extends=chatNotification]]]
+[define[TTc, [name=tentacleTherapist, id=TT, html_class=rose], [extends=chatNotification]]]
+[define[TGc, [name=turntechGodhead, id=TG, html_class=dave], [extends=chatNotification]]]
+[define[GCc, [name=gardenGnostic, id=GC, html_class=jade], [extends=chatNotification]]]
+
+[define[GCc, [name=gutsyGumshoe, id=GC, html_class=jane], [extends=chatNotification]]]
+[define[GTc, [name=golgothasTerror, id=GT, html_class=jake], [extends=chatNotification]]]
+[define[TGc, [name=tipsyGnostalgic, id=TG, html_class=roxy], [extends=chatNotification]]]
+[define[TTc, [name=timaeusTestified, id=TT, html_class=dirk], [extends=chatNotification]]]
+
+[define[AAc, [name=apocalypseArisen, id=AA, html_class=aradia], [extends=chatNotification]]]
+[define[ATc, [name=adiosToreador, id=AT, html_class=tavros], [extends=chatNotification]]]
+[define[TAc, [name=twinArmageddons, id=TA, html_class=sollux], [extends=chatNotification]]]
+[define[CGc, [name=carcinoGeneticist, id=CG, html_class=karkat], [extends=chatNotification]]]
+[define[ACc, [name=arsenicCatnip, id=AC, html_class=nepeta], [extends=chatNotification]]]
+[define[GAc, [name=grimAuxiliatrix, id=GA, html_class=kanaya], [extends=chatNotification]]]
+[define[GCc, [name=gallowsCalibrator, id=GC, html_class=terezi], [extends=chatNotification]]]
+[define[AGc, [name=arachnidsGrip, id=AG, html_class=vriska], [extends=chatNotification]]]
+[define[CTc, [name=centaursTesticle, id=CT, html_class=equius], [extends=chatNotification]]]
+[define[TCc, [name=terminallyCapricious, id=TC, html_class=gamzee], [extends=chatNotification]]]
+[define[CAc, [name=caligulasAquarium, id=CA, html_class=eridan], [extends=chatNotification]]]
+[define[CCc, [name=cuttlefishCuller, id=CC, html_class=feferi], [extends=chatNotification]]]
+
+[define[scratch, [html_class=scratch], [extends=chatText]]: [css :color: #FFFFFF;] [css[highlight] :background-color: #000000;]]
+[macro[sc=scratch]]
+
+]
