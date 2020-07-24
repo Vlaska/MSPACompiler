@@ -8,10 +8,6 @@ from .luaExec import Lua
 
 
 class BaseTag:
-    pass
-
-
-class BaseTag:
     '''
         settings: 
             safe: < and > stay that way
@@ -33,16 +29,15 @@ class BaseTag:
             args
             normal
     '''
-    textBlocks = TextBlocks([Block(True, False, ['{text}'])])
+    textBlocks = TextBlocks([Block(True, False, False, ['{text}'])])
     tag_name = ''
     arguments = {}
-    source = {}
-    wasBuild = False
+    wasBuild = True
     isSafe = True
 
 
     tags = {}
-    codes = [lambda x: x, ]
+    codes = [lambda x: x.decode('utf-8'), ]
     lua = Lua()
     luaScope = None
 
@@ -65,7 +60,11 @@ class BaseTag:
     def parse(cls, data: Dict[str, str]) -> str:
         text = data['content']
         args = cls.processArgs(data['args'])
-        return [cls.textBlocks(i, args) for i in text]
+        try:
+            return [cls.textBlocks(i or '', args) for i in text]
+        except Exception as e:
+            print(cls.tag_name)
+            raise e
 
     @classmethod
     def processArgs(cls, args):
@@ -80,3 +79,7 @@ class BaseTag:
     #     cls.textBlocks = TextBlocks([Block(True, False, ['{text}'])], cls)
 
     # init()
+
+
+if not BaseTag.textBlocks.parent:
+    BaseTag.textBlocks.parent = BaseTag

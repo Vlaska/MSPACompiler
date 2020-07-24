@@ -12,7 +12,8 @@ class Lua:
         self.lua = lupa.LuaRuntime(
             unpack_returned_tuples=True,
             register_eval=False,
-            register_builtins=False
+            register_builtins=False,
+            encoding='utf-8',
         )
 
         try:
@@ -61,6 +62,11 @@ class Lua:
         }
 
         self.lua.globals().def_scope.re = re
+        # self.lua.globals().def_scope.iter = self.lua.globals().python.iter
+        # self.lua.globals().def_scope.enumerate = \
+        #     self.lua.globals().python.enumerate
+        # self.lua.globals().def_scope.dir = dir
+        self.lua.globals().def_scope.getMatchGroup = lambda x, i: x.group(i)
         self.lua.globals().def_scope.iter = \
             lambda x: self.lua.globals().python.iter(list(str(x)))
 
@@ -80,7 +86,7 @@ class Lua:
     def addToGlobalScope(self, name: str, function):
         if name:
             self.lua.globals().def_scope[name] = function
-    
+
     @property
     def baseScope(self):
         return self.lua.globals().def_scope

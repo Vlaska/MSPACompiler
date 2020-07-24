@@ -5,6 +5,13 @@ from arpeggio import PTNodeVisitor
 
 class Visitor(PTNodeVisitor):
     squareBracketsRegex = re.compile(r'(?:\\|/)(?:\[|\])')
+    whitespaces = {
+        '\\n': '\n',
+        '\\t': '\t',
+        '\\r': '\r',
+        '\\f': '\f',
+        '\\v': '\v',
+    }
 
     @staticmethod
     def __squareBracketFix(matchobj: re.Match):
@@ -34,7 +41,7 @@ class Visitor(PTNodeVisitor):
 
     def visit_doubleQuote(self, node, children):
         return None
-    
+
     def visit_plainText(self, node, children):
         return self.fixSquareBrackets(children[0])
 
@@ -48,9 +55,24 @@ class Visitor(PTNodeVisitor):
 
     def visit_argString(self, node, children):
         # print(children)
+        name = children[0]
+        if node[0].rule_name != 'quotedString':
+            name = name.strip()
         if len(children) == 2:
-            return {children[0].strip(): children[1].strip()}
-        return {children[0].strip(): ''}
+            value = children[1]
+            if node[-1].rule_name != 'quotedString':
+                value = value.strip()
+            return {name: value}
+        return {name: ''}
+
+    def visit_quotedString(self, node, children):
+        if children:
+            return re.sub(
+                r'\\[ntrfv]',
+                lambda x: self.whitespaces[x.group(0)],
+                children[0]
+            )
+        return None
 
     def visit_listOfStrings(self, node, children):
         return children
@@ -135,4 +157,10 @@ class Visitor(PTNodeVisitor):
         return children
 
     def visit_mspaText(self, node, children):
-        return children[0]
+        out = []
+        for i in children[0]:
+            if isinstance(i, (list, tuple)):
+                out.extend(i)
+            else:
+                out.append(i)
+        return out

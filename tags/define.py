@@ -44,6 +44,7 @@ class Define:
             isSafe = True
         if isSafe is None:
             isSafe = parentTag.isSafe
+        stripWhitespaces = 'strip_whitespaces' in options
         splitLines = 'splitlines' in options
 
         arguments = {**parentTag.arguments, **tagArguments}
@@ -91,7 +92,7 @@ class Define:
                     codes.append(func)
 
             if innerTags['text']:
-                newTextBlock = Block(isSafe, splitLines)
+                newTextBlock = Block(isSafe, splitLines, stripWhitespaces)
 
                 text = innerTags['text'][0]['content']
                 for i in text:

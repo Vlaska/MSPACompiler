@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, List
 import re
 
 from .utils import fixSquareBrackets
@@ -12,7 +12,7 @@ class TextBlocks:
     ltGtEscapedRegex = re.compile(r'(?:\\|/)(?:[<>])')
 
     def __init__(self, initBlocks: List[Block] = None, parent = None):
-        self.blocks = []
+        self.blocks: List[Block] = []
         self.parent = parent
         if initBlocks and isinstance(initBlocks, (list, tuple)):
             self.blocks.extend(initBlocks)
