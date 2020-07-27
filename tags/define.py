@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Dict, Type
 
-from .utils import fixSquareBrackets
-from .baseTag import BaseTag
+# from .utils import fixSquareBrackets
+# from .baseTag import BaseTag
 from .block import Block
 from .codeTag import CodeTag
 from .ifTags import IfTag, IfNotTag
@@ -18,7 +18,7 @@ class Define:
     }
 
     @classmethod
-    def parse(cls, data: Dict):
+    def parse(cls, data: Dict, baseTag: Type[BaseTag]):
         args = data['args']
 
         if len(args) != 3:
@@ -31,11 +31,11 @@ class Define:
         content = data['content']
 
         if 'extends' in options:
-            parentTag = BaseTag.tags.get(options['extends'].lower())
+            parentTag = baseTag.tags.get(options['extends'].lower())
             if not parentTag:
-                parentTag = BaseTag
+                parentTag = baseTag
         else:
-            parentTag = BaseTag
+            parentTag = baseTag
 
         isSafe = None
         if 'unsafe' in options:
@@ -46,6 +46,7 @@ class Define:
             isSafe = parentTag.isSafe
         stripWhitespaces = 'strip_whitespaces' in options
         splitLines = 'splitlines' in options
+        ignoreWhitespaces = 'ignore_whitespaces' in options
 
         arguments = {**parentTag.arguments, **tagArguments}
         codes = parentTag.codes.copy()
@@ -77,7 +78,7 @@ class Define:
                 ):
                     continue
                 regexName = list(i['args'][0])[0]
-                BaseTag.lua.compileRegex(luaScope, regexName, t)
+                baseTag.lua.compileRegex(luaScope, regexName, t)
 
             for i in innerTags['defcode']:
                 if not (
@@ -86,13 +87,18 @@ class Define:
                         type(t) is str
                 ):
                     continue
-                func = BaseTag.lua.compileCode(t, luaScope)
-                # func = BaseTag.lua.compileCode(fixSquareBrackets(t), luaScope)
+                func = baseTag.lua.compileCode(t, luaScope)
+                # func = baseTag.lua.compileCode(fixSquareBrackets(t), luaScope)
                 if func:
                     codes.append(func)
 
             if innerTags['text']:
-                newTextBlock = Block(isSafe, splitLines, stripWhitespaces)
+                newTextBlock = Block(
+                    isSafe,
+                    splitLines,
+                    stripWhitespaces,
+                    # ignoreWhitespaces,
+                )
 
                 text = innerTags['text'][0]['content']
                 for i in text:
@@ -132,102 +138,6 @@ class Define:
         })
         tagClass.textBlocks.setParent(tagClass)
 
-        BaseTag.tags.update({tagName: tagClass})
+        baseTag.tags.update({tagName: tagClass})
 
         return tagClass
-
-    # def createTag(self, data: Dict) -> Type[BaseTag]:
-    #     args = data['args']
-    #     if len(args) < 3:
-    #         raise ValueError('Not enought arguments')
-
-    #     name = args['0'][0].lower()
-    #     if name in BaseTag.tags:
-    #         raise Exception('Tag already exists.')
-
-    #     arguments = {k.lower(): v for k, v in args['1']}
-    #     settings = {k.lower(): v for k, v in args['2']}
-
-    #     extendsName = settings.get('extends', None)
-    #     if extendsName and extendsName in BaseTag.tags:
-    #         extends = BaseTag.tags[extendsName]
-    #     else:
-    #         extends = BaseTag
-
-    #     arguments = {**extends.arguments, **arguments}
-    #     isSafe = ('safe' in settings) and ('not-safe' not in settings)
-    #     luaScope = self.lua.createScope()
-
-    #     tags = {
-    #         '__seq': [],
-    #         'regex': [],
-    #         'args': [],
-    #         'defcode': [],
-    #     }
-    #     text = data['text']
-    #     if text == '':
-    #         return
-    #     if type(text) is dict:
-    #         for i in text['text']:
-    #             if type(i) is not str and i['name'] in tags:
-    #                 tags[i['name']].append(i)
-    #             else:
-    #                 tags['__seq'].append(i)
-    #     elif type(text) is list:
-    #         for i in text:
-    #             if type(i) is not str and i['name'] in tags:
-    #                 tags[i['name']].append(i)
-    #             else:
-    #                 tags['__seq'].append(i)
-    #     else:
-    #         tags['__seq'].append(text)
-
-    #     textMethod = (
-    #         '@classproperty\n'
-    #         'def text(\n'
-    #             '    cls,\n'
-    #             '    text: str,\n'
-    #             '    isTop: bool = False,\n'
-    #             '    isSafe: bool = True,\n'
-    #             '    **arguments\n'
-    #         '):\n'
-    #         '    out = ""\n'
-    #         '    arguments = {**self.arguments, **arguments}\n'
-    #         '    text = cls.textCleanup(text, isTop, isSafe)\n\n')
-
-    #     regexTag = self.defineTags.get('regex')()
-    #     for i in tags['regex']:
-    #         self.lua.compileRegex(luaScope, *regexTag.createTag(i))
-    #     argsTag = self.defineTags.get('args')()
-    #     for i in tags['args']:
-    #         textMethod += argsTag.createTag(i)
-    #     defcodeTag = self.defineTags.get('defcode')()
-    #     codes = []
-    #     for i in tags['defcode']:
-    #         codes.append(defcodeTag.createTag(i))
-
-    #     for i in tags['__seq']:
-    #         if type(i) is str:
-    #             textMethod += f'    out += {quote(i)}\\n'
-    #         else:
-    #             print(i)
-    #             # for j in i['text']:
-    #             #     if type(j) is str:
-    #             #         textMethod += f'    out += {quote(j)}\n'
-    #             #     else:
-    #             #         name = j['name']
-    #             #         if name in self.defineTags:
-    #             #             textMethod += self.defineTags.get(name)().createTag(j)
-    #             #         elif name in self.tags:
-    #             #             textMethod += f'    self.tags.get({quote(name)})()({j}, arguments)\n'
-    #             textMethod += self.functionTextBuilder([i])
-
-    #     return textMethod
-    #     # return type(
-    #     #     name,
-    #     #     (extends, ),
-    #     #     {
-    #     #         'arguments': arguments,
-    #     #         'codes': [*extends.codes, *codes]
-    #     #     }
-    #     # )

@@ -9,20 +9,34 @@ BaseTag.tags.update({
 })
 
 
-def parse(text: list) -> str:
-    out = []
-    for i in text:
-        if type(i) is dict:
-            name = i['name']
-            tag = BaseTag.tags.get(name.lower())
+class TextParser:
+    def __init__(self):
+        self.baseTag = BaseTag.newClassInstance(self)
 
-            if tag is None:
-                print(f'Unknown tag: {name}')  # ERROR LOG
-                continue
+    @staticmethod
+    def innerParse(text: list, baseTag: Type[BaseTaq]) -> str:
+        out = []
+        for i in text:
+            if type(i) is dict:
+                name = i['name']
+                nameLower = name.lower()
+                if nameLower == 'defines':
+                    Defines.parse(i, baseTag)
+                else:
+                    tag = baseTag.tags.get(nameLower)
 
-            t = tag.parse(i)
-            if t:
-                out.extend(t)
-        elif i:
-            out.append(i)
-    return ''.join(out)
+                    if tag is None:
+                        print(f'Unknown tag: {name}')  # ERROR LOG
+                        continue
+
+                    i['content'] = [TextParser.innerParse(i['content'], baseTag)]
+
+                    t = tag.parse(i)
+                    if t:
+                        out.extend(t)
+            elif i:
+                out.append(i)
+        return ''.join(out)
+
+    def parse(self, text: list) -> str:
+        return self.innerParse(text, self.baseTag).strip()

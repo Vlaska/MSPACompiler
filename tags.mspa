@@ -11,10 +11,10 @@
 [define[div, [name="div"], [extends=htmlTag]]]
 [define[p, [name="p"], [extends=htmlTag]]]
 [define[span, [name="span"], [extends=htmlTag]]]
-[define[chat, [html_class="chat"], [extends=div, splitlines]]: [text :<p>{text}</p>] [replace[["\n"="<br>\n"]]]]
+[define[chat, [html_class="chat"], [extends=div]]: [replace[["\n"="<br>\n"]]] [text:{text}]]
 [[macro[log=chat]
 
-[define[splitspan, [html_class], [extends=html, splitlines]]: [text:<span[if[html_class]: class="{html_class}"]>{text}</span>] [replace[["\n"="<br>\n"]]]]
+[define[splitspan, [html_class], [extends=html, splitlines]]: [text:<span[if[html_class]: class="{html_class}"]>{text}</span>] ]
 [define[chatText, [id], [extends=splitspan, splitlines, unsafe]]: [text:[if[id]:{id}: ]{text}]]
 
 [define[john, [id=John, html_class=john], [extends=chatText]]: [css :color: #0715CD;]]

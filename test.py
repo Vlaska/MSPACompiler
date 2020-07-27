@@ -3,15 +3,17 @@ from pathlib import Path
 from pprint import pprint
 
 from tags.baseTag import BaseTag
-from tags import parse
+# from tags import parse
+from tags import TextParser
 from parse import parse as parseText
 
 
 # t = json.loads(Path('./out.json').read_text())
 # parse(t)
-parse(parseText(Path('./tags.mspa').read_text('utf-8')))
+t = TextParser()
+t.parse(parseText(Path('./tags.mspa').read_text('utf-8')))
 
-p = parseText('''[gamzee: test test :o)
+src = '''[chat:[gamzee: test test :o)
 Test na
 kilka
 lini
@@ -21,11 +23,11 @@ tekstu blablabla]
 [[tavros: to jest test, czy kod jest dobrze napisany
 [[dirk: teraz po drobnych poprawkach wygląda, że tak
 [[eridan: test połskich znaków
-[[aa: wygląda na to, że kod eridana działa źle x//
+[[aa: wygląda na to, że kod eridana działa źle x// 
 [[gc: also, z jakiegoś powodu nie chce domyślnie uruchamiać kodów formatujących
 [[ag: ale to powinno być łatwe do naprawienia
 [[rose: muszę też dodać usuwanie powielających się białych znaków
-test''')
+test]'''
 # p = parseText('''also, są też skróty do wstępów wiadomości:
 
 # [EBc]
@@ -54,4 +56,9 @@ test''')
 
 # ugh, wygląda na to, że część z nich się pokrywa...''')
 # pprint(p)
-print(parse(p))
+# src = '[[gamzee: test \\\\< \\\\> ù😼'
+# print(src)
+p = parseText(src)
+out = t.parse(p)
+print(out)
+Path('test.html').write_text(out, 'utf-8')

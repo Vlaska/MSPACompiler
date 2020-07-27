@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Type
 
-from .baseTag import BaseTag
+# from .baseTag import BaseTag
 from .utils import fixSquareBrackets
 
 
@@ -10,7 +10,7 @@ class Defcode:
     tag_name = 'defcode'
 
     @staticmethod
-    def parse(data: Dict):
+    def parse(data: Dict, baseTag: Type[BaseTag]):
         if not (
             data['args'] and
             data['args'][0] and
@@ -21,5 +21,5 @@ class Defcode:
             return
         # codeText = fixSquareBrackets(text)
         # function = BaseTag.lua.compileCode(codeText, BaseTag.lua.baseScope)
-        function = BaseTag.lua.compileCode(text, BaseTag.lua.baseScope)
-        BaseTag.lua.addToGlobalScope(name, function)
+        function = baseTag.lua.compileCode(text, baseTag.lua.baseScope)
+        baseTag.lua.addToGlobalScope(name, function)

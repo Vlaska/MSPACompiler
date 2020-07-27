@@ -12,12 +12,14 @@ class Block:
             self,
             isSafe: bool,
             splitLines: bool,
-            stripWhitespaces:bool,
+            stripWhitespaces: bool,
+            # ignoreWhitespaces: bool,
             initialData: List[Union[str, Type[InnerBlock]]] = None
     ):
         self.isSafe = isSafe
         self.splitLines = splitLines
         self.stripWhitespaces = stripWhitespaces
+        # self.ignoreWhitespaces = ignoreWhitespaces
         self.blocks = []
         self.replace: List[Tuple[str, str]] = []
         if initialData:
@@ -35,6 +37,9 @@ class Block:
             arguments: Dict[str, str],
             parent: BaseTag
     ) -> str:
+        # if self.ignoreWhitespaces and text.isspace():
+        #     return ''
+
         out = []
         template = []
         templateString = ''

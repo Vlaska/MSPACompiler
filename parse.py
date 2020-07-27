@@ -21,5 +21,3 @@ if __name__ == "__main__":
         json.dumps(parse(text), indent=4),
         'utf-8'
     )
-
-# kody z poprzednich rodziców nie są aktualizowane przy dziedziczeniu

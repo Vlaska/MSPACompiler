@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Type
 
 from .define import Define
 from .macro import Macro
@@ -15,10 +15,10 @@ class Defines:
     }
 
     @classmethod
-    def parse(cls, data: Dict[str, str]):
+    def parse(cls, data: Dict[str, str], baseTag: Type[BaseTag]):
         for i in data['content']:
             if type(i) is str:
                 continue
             t = cls.allowedTags.get(i['name'].lower())
             if t:
-                t.parse(i)
+                t.parse(i, baseTag)

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import re
-from typing import Dict
+from typing import Dict, Type
 
 from .utils import fixSquareBrackets
 from .block import Block
@@ -8,39 +10,23 @@ from .luaExec import Lua
 
 
 class BaseTag:
-    '''
-        settings: 
-            safe: < and > stay that way
-            unsafe: < and > gets converted to &lt; and &gt;
-            extends=<TAG>: defined tag extends previous tag
-            splitlines: split text by '\\n'
-
-        special tags:
-            define[name, [args], [settings]]
-            regex
-            function
-            text
-            out-text
-            defcode
-            code
-            if
-            ifnot
-            for
-            args
-            normal
-    '''
-    textBlocks = TextBlocks([Block(True, False, False, ['{text}'])])
+    textBlocks = TextBlocks([Block(
+        True,
+        False,
+        False,
+        # True,
+        ['{text}']
+    )])
     tag_name = ''
     arguments = {}
     wasBuild = True
     isSafe = True
 
-
     tags = {}
     codes = [lambda x: x.decode('utf-8'), ]
     lua = Lua()
     luaScope = None
-
+    parser = None
 
     @staticmethod
     def safeText(text: str) -> str:
@@ -61,7 +47,7 @@ class BaseTag:
         text = data['content']
         args = cls.processArgs(data['args'])
         try:
-            return [cls.textBlocks(i or '', args) for i in text]
+            return [cls.textBlocks(i or '', args, cls.parser) for i in text]
         except Exception as e:
             print(cls.tag_name)
             raise e
@@ -74,11 +60,20 @@ class BaseTag:
         out['tag_name'] = cls.tag_name
         return out
 
-    # @classmethod
-    # def init(cls):
-    #     cls.textBlocks = TextBlocks([Block(True, False, ['{text}'])], cls)
-
-    # init()
+    @classmethod
+    def newClassInstance(cls, parser: TextParser) -> Type[BaseTag]:
+        from .defines import Defines
+        t: Type[BaseTag] = type('BaseTag', (BaseTag, ), {
+            'textBlocks': cls.textBlocks.copy(),
+            'arguments': {},
+            'tags': {
+                'defines': Defines,
+            },
+            'codes': [lambda x: x.decode('utf-8'), ],
+            'parser': parser,
+        })
+        t.textBlocks.setParent(t)
+        return t
 
 
 if not BaseTag.textBlocks.parent:
