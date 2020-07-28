@@ -10,7 +10,11 @@ class Defcode:
     tag_name = 'defcode'
 
     @staticmethod
-    def parse(data: Dict, baseTag: Type[BaseTag]):
+    def parse(
+            data: Dict,
+            baseTag: Type[BaseTag],
+            tempTags: Dict[str, Type[BaseTag]] = None
+    ):
         if not (
             data['args'] and
             data['args'][0] and

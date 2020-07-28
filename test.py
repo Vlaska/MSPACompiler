@@ -1,17 +1,8 @@
-import json
 from pathlib import Path
-from pprint import pprint
 
-from tags.baseTag import BaseTag
-# from tags import parse
-from tags import TextParser
-from parse import parse as parseText
+from src.TextCompiler.textParser import TextParser
 
-
-# t = json.loads(Path('./out.json').read_text())
-# parse(t)
-t = TextParser()
-t.parse(parseText(Path('./tags.mspa').read_text('utf-8')))
+t = TextParser(Path('./tags.mspa').read_text('utf-8'))
 
 src = '''[chat:[gamzee: test test :o)
 Test na
@@ -27,7 +18,13 @@ tekstu blablabla]
 [[gc: also, z jakiegoś powodu nie chce domyślnie uruchamiać kodów formatujących
 [[ag: ale to powinno być łatwe do naprawienia
 [[rose: muszę też dodać usuwanie powielających się białych znaków
-test]'''
+test]
+
+[defines:
+[macro[test=gamzee]]
+[define[test1, [], []]: [text :test] [css: color: #ff00ff;]]
+]
+'''
 # p = parseText('''also, są też skróty do wstępów wiadomości:
 
 # [EBc]
@@ -58,7 +55,7 @@ test]'''
 # pprint(p)
 # src = '[[gamzee: test \\\\< \\\\> ù😼'
 # print(src)
-p = parseText(src)
-out = t.parse(p)
+out = t.parse(src)
 print(out)
 Path('test.html').write_text(out, 'utf-8')
+print(t.compileCSS())

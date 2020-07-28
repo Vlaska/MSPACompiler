@@ -22,7 +22,8 @@ class BaseTag:
     wasBuild = True
     isSafe = True
 
-    tags = {}
+    tags: Dict[str, Type[BaseTag]] = {}
+    css: Dict[str, str] = {}
     codes = [lambda x: x.decode('utf-8'), ]
     lua = Lua()
     luaScope = None
@@ -66,15 +67,20 @@ class BaseTag:
         t: Type[BaseTag] = type('BaseTag', (BaseTag, ), {
             'textBlocks': cls.textBlocks.copy(),
             'arguments': {},
-            'tags': {
-                'defines': Defines,
-            },
+            'tags': {},
             'codes': [lambda x: x.decode('utf-8'), ],
             'parser': parser,
+            'css': {}
         })
         t.textBlocks.setParent(t)
         return t
-
+    
+    @classmethod
+    def compileCSS(cls) -> str:
+        out = []
+        for k, v in cls.css.items():
+            out.append(f'{cls.tag_name}{k} {{{v}}}')
+        return '\n'.join(out)
 
 if not BaseTag.textBlocks.parent:
     BaseTag.textBlocks.parent = BaseTag

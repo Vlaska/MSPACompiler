@@ -18,7 +18,12 @@ class Define:
     }
 
     @classmethod
-    def parse(cls, data: Dict, baseTag: Type[BaseTag]):
+    def parse(
+            cls,
+            data: Dict,
+            baseTag: Type[BaseTag],
+            tempTags: Dict[str, Type[BaseTag]] = None
+    ):
         args = data['args']
 
         if len(args) != 3:
@@ -52,6 +57,7 @@ class Define:
         codes = parentTag.codes.copy()
         luaScope = parentTag.lua.cloneScope(parentTag.luaScope)
         textBlocks = parentTag.textBlocks.copy()
+        css = {}
 
         if content and content[0]:
             innerTags = {
@@ -91,6 +97,15 @@ class Define:
                 # func = baseTag.lua.compileCode(fixSquareBrackets(t), luaScope)
                 if func:
                     codes.append(func)
+
+            for i in innerTags['css']:
+                name = list(i['args'][0])[0] if i['args'] else ''
+                # css[name] = i['content']
+                cssContent = ''
+                for j in i['content']:
+                    if type(j) is str:
+                        cssContent += j
+                css[name] = cssContent
 
             if innerTags['text']:
                 newTextBlock = Block(
@@ -135,9 +150,10 @@ class Define:
             'wasBuild': True,
             'isSafe': isSafe,
             'textBlocks': textBlocks,
+            'css': css,
         })
         tagClass.textBlocks.setParent(tagClass)
 
-        baseTag.tags.update({tagName: tagClass})
+        (tempTags or baseTag.tags).update({tagName: tagClass})
 
         return tagClass

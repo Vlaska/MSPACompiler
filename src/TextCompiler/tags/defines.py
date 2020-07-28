@@ -15,10 +15,15 @@ class Defines:
     }
 
     @classmethod
-    def parse(cls, data: Dict[str, str], baseTag: Type[BaseTag]):
+    def parse(
+            cls,
+            data: Dict[str, str],
+            baseTag: Type[BaseTag],
+            tempTags: Dict[str, Type[BaseTag]] = None
+    ):
         for i in data['content']:
             if type(i) is str:
                 continue
             t = cls.allowedTags.get(i['name'].lower())
             if t:
-                t.parse(i, baseTag)
+                t.parse(i, baseTag, tempTags)

@@ -187,7 +187,7 @@
 [define[CAc, [name=caligulasAquarium, id=CA, html_class=eridan], [extends=chatNotification]]]
 [define[CCc, [name=cuttlefishCuller, id=CC, html_class=feferi], [extends=chatNotification]]]
 
-[define[scratch, [html_class=scratch], [extends=chatText]]: [css :color: #FFFFFF;] [css[highlight] :background-color: #000000;]]
+[define[scratch, [html_class=scratch], [extends=chatText]]: [css :color: #FFFFFF;] [css[":hover"] :background-color: #000000;]]
 [macro[sc=scratch]]
 
 ]

@@ -1,6 +1,6 @@
 from typing import Dict
 
-from tags.innerBlock import InnerBlock
+from src.TextCompiler.tags import InnerBlock
 
 
 class CodeTag(InnerBlock):
