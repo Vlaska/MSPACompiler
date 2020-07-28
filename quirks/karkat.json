@@ -1,6 +1,0 @@
-{
-    "name": "karkat",
-    "id": "CG: ",
-    "color": "#626262",
-    "quirks": "function () return str.upper(input) end"
-}
