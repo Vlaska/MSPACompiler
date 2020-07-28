@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import Iterable, List, Union
 import re
 
-# from . import parse
-from .utils import fixSquareBrackets
 from .block import Block
 
 
@@ -17,21 +15,24 @@ class TextBlocks:
         '>': '&gt;',
     }
 
-    def __init__(self, initBlocks: List[Block] = None, parent = None):
+    def __init__(self, initBlocks: List[Block] = None, parent=None):
         self.blocks: List[Block] = []
         self.parent = parent
         if initBlocks and isinstance(initBlocks, (list, tuple)):
             self.blocks.extend(initBlocks)
-    
+
     def append(self, val: Block):
         self.blocks.append(val)
-    
+
     def extend(self, vals: Iterable[Block]):
         self.blocks.extend(vals)
 
-    def __call__(self, text: str, arguments: Dict[str, str], parser: TextParser) -> str:
-        # if type(text) is dict:
-        #     text: str = parser.parse([text])
+    def __call__(
+            self,
+            text: str,
+            arguments: Dict[str, str],
+            parser: TextParser
+    ) -> str:
         for i in self.blocks[::-1]:
             if i.isSafe:
                 text = self.escapeLtGt(text)
@@ -44,15 +45,14 @@ class TextBlocks:
         text = self.ltGtEscapedRegex.sub(self.replaceEscapedLtGt, text)
         text = self.fixLtGtTextRegex.sub(lambda x: x.group(0).lower(), text)
 
-        # return fixSquareBrackets(text)
         return text
 
     def __copy__(self) -> TextBlocks:
         return TextBlocks(self.blocks.copy(), self.parent)
-    
+
     def copy(self) -> TextBlocks:
         return self.__copy__()
-    
+
     def setParent(self, parent):
         self.parent = parent
 

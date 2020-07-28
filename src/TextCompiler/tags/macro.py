@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Dict, Type
 
-# from .baseTag import BaseTag
-
 
 class Macro:
     @staticmethod

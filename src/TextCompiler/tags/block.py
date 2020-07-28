@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import Union, Type, List, Tuple, Dict
 import re
 
-from src.TextCompiler.tags import InnerBlock
-from src.TextCompiler.tags.ifTags import IfTag
+from .innerBlock import InnerBlock
+from .ifTags import IfTag
 
 
 class Block:

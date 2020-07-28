@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 from typing import Dict, Type
 
-from .utils import fixSquareBrackets
 from .block import Block
 from .textBlocks import TextBlocks
 from .luaExec import Lua

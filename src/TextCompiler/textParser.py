@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Type, Dict, Union
 
-from src.TextCompiler.tags import BaseTag, Defines
-from src.TextCompiler.inputStringParser import parse as inputStrToAst
+from .tags import BaseTag, Defines
+from .inputStringParser import parse as inputStrToAst
 from sys import stderr
 
 

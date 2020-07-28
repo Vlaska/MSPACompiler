@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Dict, Type
 
-# from .utils import fixSquareBrackets
-# from .baseTag import BaseTag
 from .block import Block
 from .codeTag import CodeTag
 from .ifTags import IfTag, IfNotTag
