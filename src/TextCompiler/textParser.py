@@ -9,9 +9,12 @@ from sys import stderr
 
 class TextParser:
     def __init__(self, initConfig: str):
+        self.changeInitConfiguration(initConfig)
+        self.tempTags = {}
+    
+    def changeInitConfiguration(self, initConfig: str):
         self.baseTag = BaseTag.newClassInstance(self)
         self.innerParse(initConfig, self.baseTag)
-        self.tempTags = {}
 
     @staticmethod
     def innerParse(
@@ -52,14 +55,14 @@ class TextParser:
 
     def parse(self, text: str) -> str:
         return self.innerParse(text, self.baseTag, self.tempTags).strip()
-    
+
     def resetTempTags(self):
         self.tempTags = {}
 
     def compileCSS(self) -> str:
         out = []
         used = set()
-        
+
         def compile(t: dict):
             for i in t.values():
                 if i in used:
