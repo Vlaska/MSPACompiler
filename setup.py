@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='TextCompiler',
-    version='1.0.1',
+    version='1.0.2',
     packages=['TextCompiler', 'TextCompiler.tags',
               'TextCompiler.tags.luaExec',
               'TextCompiler.inputStringParser'],

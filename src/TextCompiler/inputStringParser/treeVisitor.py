@@ -158,9 +158,10 @@ class Visitor(PTNodeVisitor):
 
     def visit_mspaText(self, node, children):
         out = []
-        for i in children[0]:
-            if isinstance(i, (list, tuple)):
-                out.extend(i)
-            else:
-                out.append(i)
+        if children:
+            for i in children[0]:
+                if isinstance(i, (list, tuple)):
+                    out.extend(i)
+                else:
+                    out.append(i)
         return out
