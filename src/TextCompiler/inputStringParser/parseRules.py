@@ -6,12 +6,20 @@ def space():
     return ar.ZeroOrMore(_(r'\t| '))
 
 
+def escapedText():
+    return _(r'(((?:\\|/)(?:\[|\]))|([^[\]]))+')
+
+
 def plainText():
-    return ar.Optional(_(r'(((?:\\|/)(?:\[|\]))|([^[\]]))+'))
+    return ar.Optional(escapedText)
+
+
+def escapedTextUntilNewLine():
+    return _(r'(((?:\\|/)(?:\[|\]))|([^[\]\n]))+')
 
 
 def plainTextUntilNewLine():
-    return ar.Optional(_(r'(((?:\\|/)(?:\[|\]))|([^[\]\n]))+'))
+    return ar.Optional(escapedTextUntilNewLine)
 
 
 def string():
