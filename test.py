@@ -23,7 +23,7 @@ test]
 [defines:
 [macro[test=gamzee]]
 [define[test1, [], []]: [text :test] [css: color: #ff00ff;]]
-]
+
 ]
 '''
 # p = parseText('''also, są też skróty do wstępów wiadomości:
