@@ -78,7 +78,7 @@ class BaseTag:
     def compileCSS(cls) -> str:
         out = []
         for k, v in cls.css.items():
-            out.append(f'{cls.tag_name}{k} {{{v}}}')
+            out.append(f'.{cls.tag_name}{k} {{{v}}}')
         return '\n'.join(out)
 
 if not BaseTag.textBlocks.parent:
