@@ -64,6 +64,7 @@ class Define:
                 'css': [],
                 'regex': [],
                 'replace': [],
+                'ifnotext': [],
             }
 
             for i in content:
@@ -92,7 +93,6 @@ class Define:
                 ):
                     continue
                 func = baseTag.lua.compileCode(t, luaScope)
-                # func = baseTag.lua.compileCode(fixSquareBrackets(t), luaScope)
                 if func:
                     codes.append(func)
 
@@ -106,11 +106,18 @@ class Define:
                 css[name] = cssContent
 
             if innerTags['text']:
+                ifNoText = ''
+                if innerTags['ifnotext'] and \
+                        (t := innerTags['ifnotext'][0]['content']) and \
+                        type(t[0]) is str:
+                    ifNoText = t[0]
+
                 newTextBlock = Block(
                     isSafe,
                     splitLines,
                     stripWhitespaces,
                     # ignoreWhitespaces,
+                    ifNoText=ifNoText
                 )
 
                 text = innerTags['text'][0]['content']

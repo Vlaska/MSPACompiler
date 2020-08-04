@@ -19,11 +19,11 @@ tekstu blablabla]
 [[ag: ale to powinno być łatwe do naprawienia
 [[rose: muszę też dodać usuwanie powielających się białych znaków
 test]
+[url[href="/test"]]
 
 [defines:
 [macro[test=gamzee]]
 [define[test1, [], []]: [text :test] [css: color: #ff00ff;]]
-
 ]
 '''
 # p = parseText('''also, są też skróty do wstępów wiadomości:
@@ -58,5 +58,5 @@ test]
 # print(src)
 out = t.parse(src)
 print(out)
-Path('test.html').write_text(out, 'utf-8')
-print(t.compileCSS())
+# Path('test.html').write_text(out, 'utf-8')
+# print(t.compileCSS())

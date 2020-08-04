@@ -14,7 +14,8 @@ class Block:
             splitLines: bool,
             stripWhitespaces: bool,
             # ignoreWhitespaces: bool,
-            initialData: List[Union[str, Type[InnerBlock]]] = None
+            initialData: List[Union[str, Type[InnerBlock]]] = None,
+            ifNoText: str = ''
     ):
         self.isSafe = isSafe
         self.splitLines = splitLines
@@ -22,6 +23,7 @@ class Block:
         # self.ignoreWhitespaces = ignoreWhitespaces
         self.blocks = []
         self.replace: List[Tuple[str, str]] = []
+        self.ifNoText = ifNoText
         if initialData:
             self.blocks.extend(initialData)
 
@@ -43,6 +45,11 @@ class Block:
         out = []
         template = []
         templateString = ''
+
+        # print(repr(text), repr(self.ifNoText))
+        if not text and self.ifNoText:
+            text = self.ifNoText.format(**arguments)
+
         inputText = text.splitlines() if self.splitLines else [text]
 
         for i in self.blocks:
