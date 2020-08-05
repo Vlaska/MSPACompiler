@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, List, Union
+from typing import Iterable, List, Union, Dict
 import re
 
 from .block import Block
@@ -42,7 +42,7 @@ class TextBlocks:
             text = i(text, arguments, self.parent)
 
         text = self.ltGtUnescapedRegex.sub(self.replaceUnescapedLtGt, text)
-        text = self.ltGtEscapedRegex.sub(self.replaceEscapedLtGt, text)
+        # text = self.ltGtEscapedRegex.sub(self.replaceEscapedLtGt, text)
         text = self.fixLtGtTextRegex.sub(lambda x: x.group(0).lower(), text)
 
         return text

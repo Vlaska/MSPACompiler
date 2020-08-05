@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Type, Dict, Union
 
 from .tags import BaseTag, Defines
+from .tags.textBlocks import TextBlocks
 from .inputStringParser import parse as inputStrToAst
 from sys import stderr
 
@@ -11,7 +12,7 @@ class TextParser:
     def __init__(self, initConfig: str):
         self.changeInitConfiguration(initConfig)
         self.tempTags = {}
-    
+
     def changeInitConfiguration(self, initConfig: str):
         self.baseTag = BaseTag.newClassInstance(self)
         self.innerParse(initConfig, self.baseTag)
@@ -54,7 +55,8 @@ class TextParser:
         return ''.join(out)
 
     def parse(self, text: str) -> str:
-        return self.innerParse(text, self.baseTag, self.tempTags).strip()
+        text = self.innerParse(text, self.baseTag, self.tempTags).strip()
+        return TextBlocks.ltGtEscapedRegex.sub(TextBlocks.replaceEscapedLtGt, text)
 
     def resetTempTags(self):
         self.tempTags = {}

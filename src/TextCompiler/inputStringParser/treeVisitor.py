@@ -74,9 +74,6 @@ class Visitor(PTNodeVisitor):
             )
         return None
 
-    def visit_listOfStrings(self, node, children):
-        return children
-
     def visit_args(self, node, children: list):
         out = []
         for v in children:
