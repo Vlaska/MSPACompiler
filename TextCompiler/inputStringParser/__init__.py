@@ -1,6 +1,6 @@
 from arpeggio import ParserPython, visit_parse_tree
 
-from .parseRules import mspaText
+from .parseRules import entrypoint
 from .treeVisitor import Visitor
 import re
 
@@ -10,7 +10,7 @@ NEW_LINE_FIX = re.compile('\r\n|\r')
 
 def parse(text: str):
     parser = ParserPython(
-        mspaText,
+        entrypoint,
         debug=False,
         skipws=False,
         ws=r'\t ',

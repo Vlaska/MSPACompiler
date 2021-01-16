@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import re
-from typing import Dict, Type
+from typing import Dict, Type, TYPE_CHECKING
 
 from .block import Block
 from .textBlocks import TextBlocks
 from .luaExec import Lua
+
+if TYPE_CHECKING:
+    from ..textParser import TextParser
 
 
 class BaseTag:
@@ -62,7 +65,6 @@ class BaseTag:
 
     @classmethod
     def newClassInstance(cls, parser: TextParser) -> Type[BaseTag]:
-        from .defines import Defines
         t: Type[BaseTag] = type('BaseTag', (BaseTag, ), {
             'textBlocks': cls.textBlocks.copy(),
             'arguments': {},
@@ -73,13 +75,14 @@ class BaseTag:
         })
         t.textBlocks.setParent(t)
         return t
-    
+
     @classmethod
     def compileCSS(cls) -> str:
         out = []
         for k, v in cls.css.items():
             out.append(f'.{cls.tag_name}{k} {{{v}}}')
         return '\n'.join(out)
+
 
 if not BaseTag.textBlocks.parent:
     BaseTag.textBlocks.parent = BaseTag

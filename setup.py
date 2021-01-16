@@ -1,16 +1,11 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(
     name='TextCompiler',
     version='1.1.1',
-    packages=['TextCompiler', 'TextCompiler.tags',
-              'TextCompiler.tags.luaExec',
-              'TextCompiler.inputStringParser'],
-    package_dir={'TextCompiler': 'src/TextCompiler'},
-    package_data={'TextCompiler': ['tags/luaExec/libs/*.lua']},
-    url='',
-    license='',
+    packages=find_packages(),
+    include_package_data=True,
     author='Vlaska',
     author_email='vlaska8888@gmail.com',
-    description='',
+    install_requires=['Arpeggio', 'lupa']
 )

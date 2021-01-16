@@ -10,23 +10,22 @@ from sys import stderr
 
 class TextParser:
     def __init__(self, initConfig: str):
-        self.changeInitConfiguration(initConfig)
+        self.baseTag = BaseTag.newClassInstance(self)
+        self.loadConfiguration(initConfig)
         self.tempTags = {}
 
-    def changeInitConfiguration(self, initConfig: str):
-        self.baseTag = BaseTag.newClassInstance(self)
-        self.innerParse(initConfig, self.baseTag)
+    def loadConfiguration(self, config: str):
+        self.innerParse(config, self.baseTag)
 
-    @staticmethod
     def innerParse(
+            self,
             text: Union[str, list],
-            baseTag: Type[BaseTag],
+            baseTag: BaseTag,
             tempTags: Dict[str, Type[BaseTag]] = None
     ) -> str:
         out = []
         if type(text) is str:
             text: list = inputStrToAst(text)
-        useTempTags = tempTags is not None
         for i in text:
             if type(i) is dict:
                 name = i['name']
@@ -34,7 +33,7 @@ class TextParser:
                 if nameLower == 'defines':
                     Defines.parse(i, baseTag, tempTags)
                 else:
-                    if useTempTags and nameLower in tempTags:
+                    if tempTags and nameLower in tempTags:
                         tag = tempTags.get(nameLower)
                     else:
                         tag = baseTag.tags.get(nameLower)
@@ -44,7 +43,7 @@ class TextParser:
                         continue
 
                     i['content'] = [
-                        TextParser.innerParse(i['content'], baseTag)
+                        self.innerParse(i['content'], self.baseTag)
                     ]
 
                     t = tag.parse(i)
@@ -56,7 +55,10 @@ class TextParser:
 
     def parse(self, text: str) -> str:
         text = self.innerParse(text, self.baseTag, self.tempTags).strip()
-        return TextBlocks.ltGtEscapedRegex.sub(TextBlocks.replaceEscapedLtGt, text)
+        return TextBlocks.ltGtEscapedRegex.sub(
+            TextBlocks.replaceEscapedLtGt,
+            text
+        )
 
     def resetTempTags(self):
         self.tempTags = {}

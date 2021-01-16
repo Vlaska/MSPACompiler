@@ -26,6 +26,10 @@ def string():
     return _(r'[><{}@_!#$%^&*./\\0-9a-zA-Z -]*')
 
 
+def tagName():
+    return _(r'[><{}@_!#$%^&*./\\0-9a-zA-Z-]+')
+
+
 def singleQuote():
     return "'"
 
@@ -83,7 +87,7 @@ def args():
 
 
 def tag():
-    return (space, string, ar.Optional(args), space)
+    return (space, tagName, space, ar.Optional(args), space)
 
 
 def tagSelected():
@@ -116,5 +120,5 @@ def textUntilNewLine():
     return ar.ZeroOrMore([oneLineTag, tagSelected, plainTextUntilNewLine])
 
 
-def mspaText():
+def entrypoint():
     return text, ar.EOF

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import Dict, Type
+from typing import Dict, Type, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from TextCompiler.tags.baseTag import BaseTag
 
 from .define import Define
 from .macro import Macro
