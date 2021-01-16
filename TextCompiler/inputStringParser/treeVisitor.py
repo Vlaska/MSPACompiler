@@ -156,7 +156,7 @@ class Visitor(PTNodeVisitor):
     def visit_textUntilNewLine(self, node, children):
         return children
 
-    def visit_mspaText(self, node, children):
+    def visit_entrypoint(self, node, children):
         out = []
         if children:
             for i in children[0]:

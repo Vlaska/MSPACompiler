@@ -91,13 +91,16 @@ def test_5():
 
 def test_6():
     ast = parse(
-        dedent(
-            '''[[1 :this tag can span only one line
-            [[2 :unless it has selected tag within [3 :then it can span several
-
-
-            lines]
-            [[4 :back to single line
-            '''
-        )
+            '[[1 :this tag can span only one line\n'
+            '[[2 :unless it has selected tag within [3 :then it can span '
+            'several\n'
+            '\n'
+            '\n'
+            'lines]'
+            '[[4 :back to single line\n'
     )
+    assert len(ast) == 5
+    assert ast == ''
+    # ast1, ast2, p2, ast3, p4
+    # assert ast1 == {'name': 1, 'args': {}, 'content': [
+    #     'this tag can span only one line']}
