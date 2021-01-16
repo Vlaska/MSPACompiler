@@ -53,24 +53,23 @@ class Visitor(PTNodeVisitor):
             return self.fixSquareBrackets(text)
         return None
 
-    def visit_argString(self, node, children):
-        # print(children)
-        name = children[0]
-        if node[0].rule_name != 'quotedString':
+    def visit_argument(self, node, children):
+        name = children[0] if len(children) else ""
+        if node[0].rule_name != 'string':
             name = name.strip()
         if len(children) == 2:
             value = children[1]
-            if node[-1].rule_name != 'quotedString':
+            if node[-1].rule_name != 'string':
                 value = value.strip()
             return {name: value}
         return {name: ''}
 
-    def visit_quotedString(self, node, children):
-        if children:
+    def visit_name(self, node, children):
+        if node.value:
             return re.sub(
                 r'\\[ntrfv]',
                 lambda x: self.whitespaces[x.group(0)],
-                children[0]
+                node.value
             )
         return None
 
@@ -165,3 +164,10 @@ class Visitor(PTNodeVisitor):
                 else:
                     out.append(i)
         return out
+    
+
+    @staticmethod
+    def flatten_tuples(tree):
+        pass
+
+    # def sec

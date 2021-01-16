@@ -5,10 +5,12 @@ from arpeggio import NoMatch
 from TextCompiler.inputStringParser import parse
 
 
-def test_simple_parse():
+def test_1():
     ast = parse('[defines]')
     assert ast == [{'name': 'defines', 'content': [None], 'args': {}}]
     ast = parse('[[defines:')
+    assert ast == [{'name': 'defines', 'content': [None], 'args': {}}]
+    ast = parse('[[defines')
     assert ast == [{'name': 'defines', 'content': [None], 'args': {}}]
 
 
@@ -66,10 +68,9 @@ def test_3(bracket, value):
         '[[',
         '[[test[',
         '[test[]',
-        '[test[[]]'
-        '[test[]]'
-        '[test[test,]]'
-        ']'
+        '[test[[]]',
+        '[test[]]',
+        ']',
     ]
 )
 def test_4(text):
@@ -89,18 +90,18 @@ def test_5():
     assert args[2] == {'extends': 'test1'}
 
 
-def test_6():
-    ast = parse(
-            '[[1 :this tag can span only one line\n'
-            '[[2 :unless it has selected tag within [3 :then it can span '
-            'several\n'
-            '\n'
-            '\n'
-            'lines]'
-            '[[4 :back to single line\n'
-    )
-    assert len(ast) == 5
-    assert ast == ''
+# def test_6():
+#     ast = parse(
+#             '[[1 :this tag can span only one line\n'
+#             '[[2 :unless it has selected tag within [3 :then it can span '
+#             'several\n'
+#             '\n'
+#             '\n'
+#             'lines]'
+#             '[[4 :back to single line\n'
+#     )
+#     assert len(ast) == 5
+#     assert ast == ''
     # ast1, ast2, p2, ast3, p4
     # assert ast1 == {'name': 1, 'args': {}, 'content': [
     #     'this tag can span only one line']}

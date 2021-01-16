@@ -22,11 +22,7 @@ def plainTextUntilNewLine():
     return ar.Optional(escapedTextUntilNewLine)
 
 
-def string():
-    return _(r'[><{}@_!#$%^&*./\\0-9a-zA-Z -]*')
-
-
-def tagName():
+def name():
     return _(r'[><{}@_!#$%^&*./\\0-9a-zA-Z-]+')
 
 
@@ -46,7 +42,7 @@ def doubleQuotedString():
     return doubleQuote, _(r"(((?:\\|/)(?:\"))|([^\"]))*"), doubleQuote
 
 
-def quotedString():
+def string():
     return [singleQuotedString, doubleQuotedString]
 
 
@@ -62,32 +58,34 @@ def separator():
     return space, ',', space
 
 
-def argString():
+def argument():
     return (
-        [quotedString, string],
+        [name, string],
         ar.Optional(
             space,
             '=',
             space,
-            [quotedString, string]
+            [name, string]
         )
     )
 
 
-def listOfStrings():
-    return '[', ar.ZeroOrMore(argString, sep=separator), ']'
-
-
-def argument():
-    return [argString, listOfStrings]
+def arguments():
+    return [argument, args]
 
 
 def args():
-    return (beginTag, ar.OneOrMore(argument, sep=separator), space, endTag)
+    return (
+        beginTag,
+        ar.OneOrMore(arguments, sep=separator),
+        ar.Optional(separator),
+        space,
+        endTag
+    )
 
 
 def tag():
-    return (space, tagName, space, ar.Optional(args), space)
+    return (space, name, space, ar.Optional(args), space)
 
 
 def tagSelected():
