@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from typing import Union, Type, List, Tuple, Dict
+from typing import TYPE_CHECKING, Union, Type, List, Tuple, Dict
 import re
 
 from .innerBlock import InnerBlock
 from .ifTags import IfTag
+
+if TYPE_CHECKING:
+    from . import BaseTag
 
 
 class Block:
@@ -13,14 +16,12 @@ class Block:
             isSafe: bool,
             splitLines: bool,
             stripWhitespaces: bool,
-            # ignoreWhitespaces: bool,
             initialData: List[Union[str, Type[InnerBlock]]] = None,
             ifNoText: str = ''
     ):
         self.isSafe = isSafe
         self.splitLines = splitLines
         self.stripWhitespaces = stripWhitespaces
-        # self.ignoreWhitespaces = ignoreWhitespaces
         self.blocks = []
         self.replace: List[Tuple[str, str]] = []
         self.ifNoText = ifNoText
@@ -39,14 +40,10 @@ class Block:
             arguments: Dict[str, str],
             parent: BaseTag
     ) -> str:
-        # if self.ignoreWhitespaces and text.isspace():
-        #     return ''
-
         out = []
         template = []
         templateString = ''
 
-        # print(repr(text), repr(self.ifNoText))
         if not text and self.ifNoText:
             text = self.ifNoText.format(**arguments)
 

@@ -69,7 +69,9 @@ def test_3(bracket, value):
         '[[test[',
         '[test[]',
         '[test[[]]',
-        '[test[]]',
+        '[test["test""test"]]',
+        "[test['test''test']]",
+        "[test['test'\"test\"]]",
         ']',
     ]
 )
@@ -90,18 +92,45 @@ def test_5():
     assert args[2] == {'extends': 'test1'}
 
 
-# def test_6():
-#     ast = parse(
-#             '[[1 :this tag can span only one line\n'
-#             '[[2 :unless it has selected tag within [3 :then it can span '
-#             'several\n'
-#             '\n'
-#             '\n'
-#             'lines]'
-#             '[[4 :back to single line\n'
-#     )
-#     assert len(ast) == 5
-#     assert ast == ''
-    # ast1, ast2, p2, ast3, p4
-    # assert ast1 == {'name': 1, 'args': {}, 'content': [
-    #     'this tag can span only one line']}
+def test_6():
+    ast = parse(
+        '[[1 :this tag can span only one line\n'
+        '[[2 :unless it has selected tag within [3 :then it can span '
+        'several\n'
+        '\n'
+        '\n'
+        'lines]\n'
+        '[[4 :back to single line\n'
+    )
+    # assert ast == ''
+    assert len(ast) == 6
+    b1, n1, b2, n2, b4, n3 = ast
+    assert n1 == n2 == n3 == '\n'
+    assert b1 == {
+        'name': "1",
+        'args': {},
+        'content': [
+            'this tag can span only one line'
+        ]
+    }
+    assert b2 == {
+        "name": "2",
+        "args": {},
+        "content": [
+            "unless it has selected tag within ",
+            {
+                "name": "3",
+                "args": {},
+                "content": [
+                    "then it can span several\n\n\nlines"
+                ]
+            }
+        ]
+    }
+    assert b4 == {
+        "name": "4",
+        "args": {},
+        "content": [
+            "back to single line"
+        ]
+    }

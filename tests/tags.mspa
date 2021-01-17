@@ -205,8 +205,6 @@
 
             text = regex.letters.sub(
                 function (c)
-                    print(getMatchGroup(c, 'vowels'))
-                    print(getMatchGroup(c, 'nonvowels'))
                     local color = getMatchGroup(c, 'vowels') ~= nil and 'red' or 'blue'
                     return str.format('<span style="color: {};">{}</span>', color, getMatchGroup(c, 0))
                 end,

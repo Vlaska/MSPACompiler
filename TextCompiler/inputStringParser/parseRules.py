@@ -77,7 +77,7 @@ def arguments():
 def args():
     return (
         beginTag,
-        ar.OneOrMore(arguments, sep=separator),
+        ar.ZeroOrMore(arguments, sep=separator),
         ar.Optional(separator),
         space,
         endTag

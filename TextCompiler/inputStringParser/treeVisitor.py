@@ -64,13 +64,19 @@ class Visitor(PTNodeVisitor):
             return {name: value}
         return {name: ''}
 
+    def fix_special_characters(self, text: str) -> str:
+        return re.sub(
+            r'\\[ntrfv]',
+            lambda x: self.whitespaces[x.group(0)],
+            text
+        )
+
+    def visit_string(self, node, children):
+        return self.fix_special_characters(children[0])
+
     def visit_name(self, node, children):
         if node.value:
-            return re.sub(
-                r'\\[ntrfv]',
-                lambda x: self.whitespaces[x.group(0)],
-                node.value
-            )
+            return self.fix_special_characters(node.value)
         return None
 
     def visit_args(self, node, children: list):
@@ -149,11 +155,21 @@ class Visitor(PTNodeVisitor):
     def visit_listOfStrings(self, node, children):
         return [i for i in children if i != ' ']
 
+    @staticmethod
+    def flatten_oneline_tag(children):
+        out = []
+        for i in children:
+            if type(i) is tuple:
+                out.extend(i)
+            else:
+                out.append(i)
+        return out
+
     def visit_text(self, node, children):
-        return children
+        return self.flatten_oneline_tag(children)
 
     def visit_textUntilNewLine(self, node, children):
-        return children
+        return self.flatten_oneline_tag(children)
 
     def visit_entrypoint(self, node, children):
         out = []
@@ -164,7 +180,6 @@ class Visitor(PTNodeVisitor):
                 else:
                     out.append(i)
         return out
-    
 
     @staticmethod
     def flatten_tuples(tree):

@@ -1,4 +1,4 @@
-from .textParser import TextParser
+from .textParser import TextCompiler
 
 
-__all__ = [TextParser]
+__all__ = [TextCompiler]

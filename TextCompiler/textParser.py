@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type, Dict, Union
+from typing import List, Type, Dict, Union
 
 from .tags import BaseTag, Defines
 from .tags.textBlocks import TextBlocks
@@ -8,42 +8,68 @@ from .inputStringParser import parse as inputStrToAst
 from sys import stderr
 
 
-class TextParser:
-    def __init__(self, initConfig: str):
+class TextCompiler:
+    '''This class is an entrypoint to the compiler'''
+
+    def __init__(self, tag_definitions: str = ''):
+        """Initialize compiler
+
+        Parameters
+        ----------
+        tag_definitions : str, optional
+            Initial language tags. They will be present in all text blocks
+            created after loading then in, by default ''
+        """
         self.baseTag = BaseTag.newClassInstance(self)
-        self.loadConfiguration(initConfig)
-        self.tempTags = {}
+        if tag_definitions:
+            self.load_tags(tag_definitions)
 
-    def loadConfiguration(self, config: str):
-        self.innerParse(config, self.baseTag)
+    def load_tags(self, tag_definitions: str):
+        """Load new tag definitions.
 
-    def innerParse(
+        After loaded, they will be available in all newly created blocks.
+
+        Parameters
+        ----------
+        tag_definitions : str
+            String containing tag definitions.
+        """
+        self.process_text(tag_definitions, False)
+
+    def process_text(
             self,
             text: Union[str, list],
-            baseTag: BaseTag,
-            tempTags: Dict[str, Type[BaseTag]] = None
+            use_tmp_tags: bool | Dict[str, Type[BaseTag]] = True
+    ) -> str:
+        tmp_tags = {} if use_tmp_tags else None
+        ast: list = inputStrToAst(text)
+        return self.__process_ast(ast, tmp_tags)
+
+    def __process_ast(
+            self,
+            ast: List,
+            tmp_tags: Dict[str, Type[BaseTag]]
     ) -> str:
         out = []
-        if type(text) is str:
-            text: list = inputStrToAst(text)
-        for i in text:
+
+        for i in ast:
             if type(i) is dict:
                 name = i['name']
                 nameLower = name.lower()
                 if nameLower == 'defines':
-                    Defines.parse(i, baseTag, tempTags)
+                    Defines.parse(i, self.baseTag, tmp_tags)
                 else:
-                    if tempTags and nameLower in tempTags:
-                        tag = tempTags.get(nameLower)
+                    if tmp_tags is not None and nameLower in tmp_tags:
+                        tag = tmp_tags.get(nameLower)
                     else:
-                        tag = baseTag.tags.get(nameLower)
+                        tag = self.baseTag.tags.get(nameLower)
 
                     if tag is None:
                         print(f'Unknown tag: {name}', file=stderr)  # ERROR LOG
                         continue
 
                     i['content'] = [
-                        self.innerParse(i['content'], self.baseTag)
+                        self.__process_ast(i['content'], tmp_tags)
                     ]
 
                     t = tag.parse(i)
@@ -51,19 +77,29 @@ class TextParser:
                         out.extend(t)
             elif i:
                 out.append(i)
+
         return ''.join(out)
 
-    def parse(self, text: str) -> str:
-        text = self.innerParse(text, self.baseTag, self.tempTags).strip()
+    def compile(self, text: str) -> str:
+        """Compile input text
+
+        Parameters
+        ----------
+        text : str
+            Text to be compiled
+
+        Returns
+        -------
+        str
+            Resulting text
+        """
+        text = self.process_text(text).strip()
         return TextBlocks.ltGtEscapedRegex.sub(
             TextBlocks.replaceEscapedLtGt,
             text
         )
 
-    def resetTempTags(self):
-        self.tempTags = {}
-
-    def compileCSS(self) -> str:
+    def compile_css(self) -> str:
         out = []
         used = set()
 
@@ -76,7 +112,6 @@ class TextParser:
                 if v:
                     out.append(v)
 
-        compile(self.tempTags)
         compile(self.baseTag.tags)
 
         return '\n'.join(out)

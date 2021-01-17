@@ -52,7 +52,6 @@ class Define:
             isSafe = parentTag.isSafe
         stripWhitespaces = 'strip_whitespaces' in options
         splitLines = 'splitlines' in options
-        ignoreWhitespaces = 'ignore_whitespaces' in options
 
         arguments = {**parentTag.arguments, **tagArguments}
         codes = parentTag.codes.copy()
@@ -119,7 +118,6 @@ class Define:
                     isSafe,
                     splitLines,
                     stripWhitespaces,
-                    # ignoreWhitespaces,
                     ifNoText=ifNoText
                 )
 
@@ -162,6 +160,8 @@ class Define:
         })
         tagClass.textBlocks.setParent(tagClass)
 
-        (tempTags or baseTag.tags).update({tagName: tagClass})
+        (baseTag.tags if tempTags is None else tempTags).update(
+            {tagName: tagClass}
+        )
 
         return tagClass

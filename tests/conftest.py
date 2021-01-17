@@ -1,14 +1,14 @@
 from pathlib import Path
 
 import pytest
-from TextCompiler import TextParser
+from TextCompiler import TextCompiler
 
 
 @pytest.fixture
 def u_compiler():
-    return TextParser()
+    return TextCompiler()
 
 
 @pytest.fixture
 def compiler():
-    return TextParser(Path('./tags.mspa').read_text('utf-8'))
+    return TextCompiler(Path('./tags.mspa').read_text('utf-8'))

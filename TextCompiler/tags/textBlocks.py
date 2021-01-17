@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from typing import Iterable, List, Union, Dict
 import re
+from typing import TYPE_CHECKING, Dict, Iterable, List
 
 from .block import Block
+
+if TYPE_CHECKING:
+    from ..textParser import TextCompiler
 
 
 class TextBlocks:
@@ -18,7 +21,7 @@ class TextBlocks:
     def __init__(self, initBlocks: List[Block] = None, parent=None):
         self.blocks: List[Block] = []
         self.parent = parent
-        if initBlocks and isinstance(initBlocks, (list, tuple)):
+        if initBlocks and isinstance(initBlocks, list):
             self.blocks.extend(initBlocks)
 
     def append(self, val: Block):
@@ -31,7 +34,7 @@ class TextBlocks:
             self,
             text: str,
             arguments: Dict[str, str],
-            parser: TextParser
+            parser: TextCompiler
     ) -> str:
         for i in self.blocks[::-1]:
             if i.isSafe:
@@ -42,7 +45,6 @@ class TextBlocks:
             text = i(text, arguments, self.parent)
 
         text = self.ltGtUnescapedRegex.sub(self.replaceUnescapedLtGt, text)
-        # text = self.ltGtEscapedRegex.sub(self.replaceEscapedLtGt, text)
         text = self.fixLtGtTextRegex.sub(lambda x: x.group(0).lower(), text)
 
         return text

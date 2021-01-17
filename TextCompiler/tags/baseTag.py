@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from typing import Dict, Type, TYPE_CHECKING
 
 from .block import Block
@@ -8,7 +7,7 @@ from .textBlocks import TextBlocks
 from .luaExec import Lua
 
 if TYPE_CHECKING:
-    from ..textParser import TextParser
+    from ..textParser import TextCompiler
 
 
 class BaseTag:
@@ -16,7 +15,6 @@ class BaseTag:
         True,
         False,
         False,
-        # True,
         ['{text}']
     )])
     tag_name = ''
@@ -64,7 +62,7 @@ class BaseTag:
         return out
 
     @classmethod
-    def newClassInstance(cls, parser: TextParser) -> Type[BaseTag]:
+    def newClassInstance(cls, parser: TextCompiler) -> Type[BaseTag]:
         t: Type[BaseTag] = type('BaseTag', (BaseTag, ), {
             'textBlocks': cls.textBlocks.copy(),
             'arguments': {},
