@@ -27,9 +27,6 @@ class TextBlocks:
     def append(self, val: Block):
         self.blocks.append(val)
 
-    def extend(self, vals: Iterable[Block]):
-        self.blocks.extend(vals)
-
     def __call__(
             self,
             text: str,
@@ -66,9 +63,7 @@ class TextBlocks:
     def replaceUnescapedLtGt(cls, match: re.Match) -> str:
         text = match.group(0)
         outSign = cls.ltGtReplacements[text[-1]]
-        if len(text) == 3:
-            return text[:2] + outSign
-        return outSign
+        return text[:2] + outSign
 
     @staticmethod
     def replaceEscapedLtGt(match: re.Match) -> str:

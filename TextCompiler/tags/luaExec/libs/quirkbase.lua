@@ -55,7 +55,8 @@ def_scope = {
     utf8 = utf8,
     xpcall = xpcall,
 
-    regex = {}
+    regex = {},
+    _my = {}
 }
 
 function sethook(func, limit)

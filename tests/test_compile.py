@@ -166,8 +166,7 @@ ugh, wygląda na to, że część z nich się pokrywa...'''
 [[EB: game bro to żart i obaj o tym wiemy.
 [[TG: ta
 [[TG: idź sprawdź skrzynkę może już przyszła
-[[EB: jasne.
-]''',
+[[EB: jasne.]''',
         '''<div class="chat">-- turntechGodhead <span class="dave">[TG]</span> zaczął dręczyć (przyp. tłum. z ang. to pester – dręczyć) ectoBiologist <span class="john">[EB]</span> o 16:13 --<br>
 <br>
 <span class="dave">TG: hej więc jaki zajebisty łup dziś zgarnąłeś</span><br>
@@ -195,8 +194,51 @@ ugh, wygląda na to, że część z nich się pokrywa...'''
 <span class="john">EB: game bro to żart i obaj o tym wiemy.</span><br>
 <span class="dave">TG: ta</span><br>
 <span class="dave">TG: idź sprawdź skrzynkę może już przyszła</span><br>
-<span class="john">EB: jasne.</span><br>
-</div>'''
+<span class="john">EB: jasne.</span></div>'''
+    ),
+    (
+        "[html :`(?P<nonvowels>[^aąeęioóuyAĄEĘIOÓUY\]+)|(?P<vowels>[aąeęioóuyAĄEĘIOÓUY\]+)`]",
+        "(?P<nonvowels>[^aąeęioóuyAĄEĘIOÓUY\]+)|(?P<vowels>[aąeęioóuyAĄEĘIOÓUY\]+)"
+    ),
+    (
+        '[eridan: ł w Ł W]',
+        '<span class="eridan">Eridan: łł ww ŁŁ WW</span>'
+    ),
+    (
+        '[[eridan:` ł w Ł W []`',
+        '<span class="eridan">Eridan: łł ww ŁŁ WW []</span>'
+    ),
+    (
+        '[[eridan: ł w \r\nŁ W ',
+        '<span class="eridan">Eridan: łł ww </span>\nŁ W'
+    ),
+    (
+        '[[eridan:` ł w \nŁ W `',
+        '<span class="eridan">Eridan: łł ww </span>\n'
+        '<span class="eridan">Eridan: ŁŁ WW </span>'
+    ),
+    (
+        '[[eridan: ` ł w \nŁ W `',
+        '<span class="eridan">Eridan: ` łł ww </span>\nŁ W `'
+    ),
+    (
+        r'`this is a \` test /` string`',
+        'this is a ` test ` string'
+    ),
+    (
+        '[unknown]',
+        ''
+    ),
+    (
+        '''[defines:
+    [define[test, [t], []]:
+        [text:[if[t]:true][ifnot[t]:false]]
+    ]
+][test[t=1]] [test]''',
+        'true false'
+    ),
+    (
+        '', ''
     )
 ]
 
@@ -235,3 +277,26 @@ def test_4(compiler: TextCompiler):
     results = compiler.compile_css()
     for i in css_text.splitlines():
         assert i in results
+
+
+def test_5(u_compiler: TextCompiler):
+    text = '''[defines:
+    [define[test, [], []]: [text:test]]
+    [define[test1, [], []]]
+    [macro[]]
+    [macro[unknown]]
+    [macro[unknown1=unknown]]
+    [macro[test=test1]]
+    [macro[l1=test, l2=test1]]
+]'''
+    u_compiler.load_tags(text)
+    tags = u_compiler.baseTag.tags
+    assert len(tags) == 4
+    assert tags['test'] is not tags['test1']
+    assert tags['l1'] is tags['test']
+    assert tags['l2'] is tags['l2']
+
+    t = u_compiler.compile('''[defines:
+    [macro[l3=test, l4=l3]]
+][l3] [l4]''')
+    assert t == 'test test'

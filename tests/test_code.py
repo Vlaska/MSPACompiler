@@ -1,0 +1,85 @@
+from TextCompiler.textParser import TextCompiler
+import pytest
+from TextCompiler.tags.luaExec import Lua
+from lupa import LuaError
+from pathlib import Path
+
+
+def test_lua_load(monkeypatch):
+    code = ';kjnbgdfropij12opj0239-dfg]poawfddszf'
+    monkeypatch.setattr(Path, 'read_text', lambda *args, **kwargs: code)
+
+    with pytest.raises(Exception, match="while importing base"):
+        Lua()
+
+
+def test_2(u_compiler: TextCompiler):
+    text = '''[defines:
+    [defcode:1]
+    [defcode[]:1]
+    [defcode[[]]:1]
+    [defcode[a]]
+    [defcode[b]:[test]]
+    [defcode[c] :` function (text) return "1. " .. text end`]
+    [defcode[d] :` function (text) return "2. " .. text end`]
+    [defcode[c] :` function (text) return "3. " .. text end`]
+]'''
+    u_compiler.load_tags(text)
+    result = u_compiler.compile('''[defines:
+    [defcode[c] :` function (text) return "4. " .. text end`]
+    [defcode[e] :` function (text) return "5. " .. text end`]
+    [define[test, [q=0], []]:
+        [defcode: c]
+        [defcode: d]
+        [defcode: _my.c]
+        [defcode: _my.e]
+        [text:[code[q]:{text}]]
+    ]
+    [define[test1, [], []]: [defcode: c] [text :[code[a]:{text}]]]
+    [define[test2, [a], []]: [defcode: c] [text :[code[a]:{text}]]]
+]
+[test:test]
+[test[q=1]:test]
+[test[q=2]:test]
+[test[q=3]:test]
+[test[q=4]:test]
+a: [test1:test]
+b: [test2[a="test"]:test]
+''')
+    assert len(u_compiler.baseTag.luaScope._my) == 0
+    assert u_compiler.baseTag.luaScope.c
+    assert u_compiler.baseTag.luaScope.d
+    assert '3. test' in result
+    assert '2. test' in result
+    assert '4. test' in result
+    assert '5. test' in result
+    assert 'a: test' in result
+    assert 'b: test' in result
+
+
+def test_3(u_compiler: TextCompiler):
+    with pytest.raises(LuaError):
+        u_compiler.compile(
+            '''[defines:
+        [define[test, [a=1], []]:
+            [defcode :` function (text)
+                1 + "a"
+                return text
+            end`]]
+            [text :[code[a]]]
+            ][test:text]'''
+        )
+    # with pytest.raises(LuaError):
+    u_compiler.load_tags(
+        '''[defines:
+        [define[test, [a=1], []]:
+            [defcode :` function (text)
+                t = text / 0
+                return text .. " test"
+            end`]
+            [text :[code[a]:{text}]]
+        ]
+    ]'''
+    )
+    with pytest.raises(LuaError, match="attempt to perform arithmetic"):
+        u_compiler.compile('[test:text]')

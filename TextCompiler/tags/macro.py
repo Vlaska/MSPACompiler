@@ -30,7 +30,7 @@ class Macro:
                     dst = baseTag.tags
                     src = baseTag.tags
 
-                if not (new or old or new in dst):
+                if not (new and old) or new in dst:
                     continue
 
                 tag = src.get(old)

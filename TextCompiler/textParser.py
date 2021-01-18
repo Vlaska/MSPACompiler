@@ -43,7 +43,10 @@ class TextCompiler:
     ) -> str:
         tmp_tags = {} if use_tmp_tags else None
         ast: list = inputStrToAst(text)
-        return self.__process_ast(ast, tmp_tags)
+        result = self.__process_ast(ast, tmp_tags)
+        if use_tmp_tags:
+            self.baseTag.lua.reset_tmp_code(self.baseTag.luaScope)
+        return result
 
     def __process_ast(
             self,

@@ -62,16 +62,11 @@ class Lua:
         }
 
         self.lua.globals().def_scope.re = re
-        # self.lua.globals().def_scope.iter = self.lua.globals().python.iter
-        # self.lua.globals().def_scope.enumerate = \
-        #     self.lua.globals().python.enumerate
-        # self.lua.globals().def_scope.dir = dir
         self.lua.globals().def_scope.getMatchGroup = lambda x, i: x.group(i)
         self.lua.globals().def_scope.iter = \
             lambda x: self.lua.globals().python.iter(list(str(x)))
 
         self.cloneScope = self.lua.globals().cloneScope
-        # self.initScope = self.lua.globals().initScope
         self.compileCode = self.lua.globals().compileCode
 
         self.logger = logging.getLogger(__name__)
@@ -83,9 +78,17 @@ class Lua:
     def compileRegex(scope: LuaTable, name: str, regex: str):
         scope.regex[name] = re.compile(regex)
 
-    def addToGlobalScope(self, name: str, function):
+    def addToScope(self, base_scope, name: str, function, is_tmp: bool):
         if name:
-            self.lua.globals().def_scope[name] = function
+            if is_tmp:
+                base_scope._my[name] = function
+            else:
+                self.lua.globals().def_scope[name] = function
+                base_scope[name] = function
+
+    @staticmethod
+    def reset_tmp_code(scope):
+        scope._my = {}
 
     @property
     def baseScope(self):

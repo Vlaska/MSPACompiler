@@ -26,22 +26,8 @@ class BaseTag:
     css: Dict[str, str] = {}
     codes = [lambda x: x.decode('utf-8'), ]
     lua = Lua()
-    luaScope = None
+    luaScope = lua.createScope()
     parser = None
-
-    @staticmethod
-    def safeText(text: str) -> str:
-        return text
-
-    @classmethod
-    def notSafeText(cls, text: str) -> str:
-        return cls.ltGtEscapedRegex.sub(
-            cls.replaceSafeLtGt,
-            cls.ltGtNotEscapedRegex.sub(
-                cls.replaceUnsafeLtGt,
-                text
-            )
-        )
 
     @classmethod
     def parse(cls, data: Dict[str, str]) -> str:

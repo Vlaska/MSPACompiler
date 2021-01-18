@@ -1,7 +1,7 @@
 [defines:
 
-[defcode[upper]: function (text) return str.upper(text) end]
-[defcode[lower]: function (text) return str.lower(text) end]
+[defcode[upper]:` function (text) return str.upper(text) end`]
+[defcode[lower]:` function (text) return str.lower(text) end`]
 
 [[define[html, [], [safe, strip_whitespaces]]: [text :{text}]
 [[define[selfClosingHtmlTag, [name=div, html_class, style, target], [safe]]: [text :<{name}[if[html_class]: class="{html_class}"][if[style]: style="{style}"][if[target]: target="{target}"]>{text}]
@@ -45,65 +45,65 @@
 [define[quirkText, [quirk=1], [extends=chatText]]: [text :[code[quirk]:{text}]]]
 
 [define[aradia, [id=Aradia, html_class=aradia], [extends=quirkText]]: 
-    [defcode: function(text)
+    [defcode:` function(text)
         text = lower(text)
         return re.sub('o', '0', text)
-    end]
-    [defcode:lower]
+    end`]
+    [defcode:`lower`]
     [css :color: #A10000;]
 ]
 [define[tavros, [id=Tavros, html_class=tavros], [extends=quirkText]]: 
-    [defcode: function(text)
+    [defcode:` function(text)
         return str.swapcase(str.title(str.lower(text)))
-    end]
+    end`]
     [css :color: #A15000;]
 ]
 [define[sollux, [id=TA, html_class=sollux], [extends=quirkText]]: 
-    [defcode: function(text)
+    [defcode:` function(text)
         return re.sub('i', 'ii', (re.sub('s', '2', text)))
-    end]
-    [defcode: function(text)
+    end`]
+    [defcode:` function(text)
         return re.sub('o', '0', text)
-    end]
+    end`]
     [css :color: #A1A100;]
 ]
-[define[karkat, [id=Karkat, html_class=karkat], [extends=quirkText]]: [defcode: upper] [css :color: #626262;]]
+[define[karkat, [id=Karkat, html_class=karkat], [extends=quirkText]]: [defcode:` upper`] [css :color: #626262;]]
 [define[nepeta, [id=Nepeta, html_class=nepeta], [extends=quirkText]]: 
-    [defcode: function(text)
+    [defcode:` function(text)
         return ":33 < " .. re.sub('ee', '33', text, 0, re.IGNORECASE)
-    end]
+    end`]
     [css :color: #416600;]
 ]
 [define[kanaya, [id=Kanaya, html_class=kanaya], [extends=quirkText]]: 
-    [defcode: function(text)
+    [defcode:` function(text)
         return str.title(str.lower(text))
-    end]
+    end`]
     [css :color: #008141;]
 ]
 [define[terezi, [id=Terezi, html_class=terezi], [extends=quirkText]]:
-    [defcode: function(text)
+    [defcode:` function(text)
         return str.upper(re.sub('i', '1', re.sub('e', '3', re.sub('a', '4', str.lower(text)))))
-    end]
-    [defcode: function(text)
+    end`]
+    [defcode:` function(text)
         return re.sub('i', '1', re.sub('e', '3', re.sub('a', '4', str.lower(text))))
-    end]
+    end`]
     [css :color: #008282;]
 ]
 [define[vriska, [id=Vriska, html_class=vriska], [extends=quirkText]]: 
-    [defcode: function(text)
+    [defcode:` function(text)
         return re.sub('b', '8', text)
-    end]
+    end`]
     [css :color: #005682;]
 ]
 [define[equius, [id=Equius, html_class=equius], [extends=quirkText]]: 
-    [defcode: function(text)
+    [defcode:` function(text)
         return 'D --> ' .. str.replace(text, 'ks', '%')
-    end]
+    end`]
     [css :color: #000056;]
 ]
 [define[gamzee, [id=Gamzee, html_class=gamzee], [extends=quirkText]]:
     [regex[emot]::(?:o|O)\)]
-    [defcode: function(text)
+    [defcode:` function(text)
         if #text == 0 then
             return text
         end
@@ -117,8 +117,8 @@
             end
         end
         return regex.emot.sub(':o)', table.concat(out, ''))
-    end]
-    [defcode: function(text)
+    end`]
+    [defcode:` function(text)
         if #text == 0 then
             return text
         end
@@ -130,26 +130,26 @@
             cap = not cap
         end
         return regex.emot.sub(':o)', table.concat(out, ''))
-    end]
-    [defcode: function(text)
+    end`]
+    [defcode:` function(text)
         if #text == 0 then
             return text
         end
 
         return regex.emot.sub(':o)', str.isupper(text:sub(1, 1)) and str.upper(text) or str.lower(text))
-    end]
+    end`]
     [css :color: #2B0057;]
 ]
 [define[eridan, [id=Eridan, html_class=eridan], [extends=quirkText]]:
-    [regex['w_and_l_with_stroke']:\[wWłŁ\]]
-    [defcode: function(text)
+    [regex['w_and_l_with_stroke']:`[wWłŁ]`]
+    [defcode:` function(text)
         return regex.w_and_l_with_stroke.sub(function (p) t = getMatchGroup(p, 0); return t .. t end, text)
-    end]]
+    end`]]
 [define[feferi, [id=Feferi, html_class=feferi], [extends=quirkText]]:
     [regex[h]:(h|H)]
-    [defcode: function(text) 
+    [defcode:` function(text) 
         return str.replace(regex.h.sub(')(', text), 'E', '-E')
-    end]
+    end`]
     [css :color: #77003C;]
 ]
 
@@ -167,7 +167,7 @@
 [define[tCC, [id=CC, html_class=feferi], [extends=feferi]]]
 
 
-[define[chatNotification, [name, id, html_class], [safe]]: [text:{name} <span class="{html_class}">\[{id}\]</span>]]
+[define[chatNotification, [name, id, html_class], [safe]]: [text:`{name} <span class="{html_class}">[{id}]</span>`]]
 
 [define[EBc, [name=ectoBiologist, id=EB, html_class=john], [extends=chatNotification]]]
 [define[GTc, [name=ghostyTrickster, id=GT, html_class=john], [extends=chatNotification]]]
@@ -199,7 +199,7 @@
 [define[text, [], [extends=html, unsafe]]: [text :{text}] [replace[["\n"="<br>\n"]]]]
 
 [define[hash, [t=1], [extends=html, safe]]:
-    [regex['letters'] :(?P<nonvowels>\[^aąeęioóuyAĄEĘIOÓUY\]+)|(?P<vowels>\[aąeęioóuyAĄEĘIOÓUY\]+)]
+    [regex['letters'] :`(?P<nonvowels>[^aąeęioóuyAĄEĘIOÓUY]+)|(?P<vowels>[aąeęioóuyAĄEĘIOÓUY]+)`]
     [defcode: function (text)
             if #text == 0 then return '' end
 

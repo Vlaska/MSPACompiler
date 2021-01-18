@@ -1,8 +1,10 @@
-from arpeggio import RegExMatch as _
+import re
+
 import arpeggio as ar
+from arpeggio import RegExMatch as _
 
 
-def space():
+def ws():
     return ar.ZeroOrMore(_(r'\t| '))
 
 
@@ -26,20 +28,16 @@ def name():
     return _(r'[><{}@_!#$%^&*./\\0-9a-zA-Z-]+')
 
 
-def singleQuote():
-    return "'"
-
-
-def doubleQuote():
-    return '"'
-
-
 def singleQuotedString():
-    return singleQuote, _(r'(((?:\\|/)(?:\'))|([^\']))*'), singleQuote
+    return _(r"'.*?(?<!\\|/)'", re_flags=re.MULTILINE | re.S)
 
 
 def doubleQuotedString():
-    return doubleQuote, _(r"(((?:\\|/)(?:\"))|([^\"]))*"), doubleQuote
+    return _(r'".*?(?<!\\|/)"', re_flags=re.MULTILINE | re.S)
+
+
+def codeString():
+    return _(r'`.*?(?<!\\|/)`', re_flags=re.MULTILINE | re.S)
 
 
 def string():
@@ -47,31 +45,31 @@ def string():
 
 
 def beginTag():
-    return _(r'(?<!\\|/)\[')
+    return '['
 
 
 def endTag():
-    return _(r'(?<!\\|/)\]')
+    return ']'
 
 
 def separator():
-    return space, ',', space
+    return ws, ',', ws
 
 
 def argument():
     return (
         [name, string],
         ar.Optional(
-            space,
+            ws,
             '=',
-            space,
+            ws,
             [name, string]
         )
     )
 
 
 def arguments():
-    return [argument, args]
+    return [args, argument]
 
 
 def args():
@@ -79,13 +77,13 @@ def args():
         beginTag,
         ar.ZeroOrMore(arguments, sep=separator),
         ar.Optional(separator),
-        space,
+        ws,
         endTag
     )
 
 
 def tag():
-    return (space, name, space, ar.Optional(args), space)
+    return (ws, name, ws, ar.Optional(args), ws)
 
 
 def tagSelected():
@@ -98,24 +96,28 @@ def tagSelected():
 
 
 def beginOneLineTag():
-    return _(r'(?<!\\|/)\[\[')
+    return '[['
 
 
 def oneLineTag():
     return (
         beginOneLineTag,
         ar.OneOrMore(tag, sep=separator),
-        ar.Optional(':', textUntilNewLine),
-        ['\n', endTag, ar.EOF]
+        ar.Optional(':', textUntilNewLine)
     )
 
 
 def text():
-    return ar.ZeroOrMore([oneLineTag, tagSelected, plainText])
+    return ar.ZeroOrMore([oneLineTag, tagSelected, codeString, plainText])
 
 
 def textUntilNewLine():
-    return ar.ZeroOrMore([oneLineTag, tagSelected, plainTextUntilNewLine])
+    return ar.ZeroOrMore([
+        oneLineTag,
+        tagSelected,
+        codeString,
+        plainTextUntilNewLine
+    ])
 
 
 def entrypoint():

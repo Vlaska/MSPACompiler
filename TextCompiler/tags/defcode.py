@@ -24,4 +24,9 @@ class Defcode:
         ):
             return
         function = baseTag.lua.compileCode(text, baseTag.lua.baseScope)
-        baseTag.lua.addToGlobalScope(name, function)
+        baseTag.lua.addToScope(
+            baseTag.luaScope,
+            name,
+            function,
+            tempTags is not None
+        )

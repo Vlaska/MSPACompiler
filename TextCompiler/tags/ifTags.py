@@ -16,4 +16,6 @@ class IfTag(InnerBlock):
 
 class IfNotTag(IfTag):
     def __call__(self, arguments: Dict[str, str]):
-        return '' if (t := super().__call__(arguments)) else t
+        return self.retVal \
+            if not(self.argName in arguments and arguments[self.argName]) \
+            else ''
