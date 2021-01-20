@@ -11,7 +11,7 @@ from .defcode import Defcode
 
 
 class Defines:
-    allowedTags = {
+    allowed_tags = {
         'define': Define,
         'macro': Macro,
         'defcode': Defcode
@@ -21,12 +21,12 @@ class Defines:
     def parse(
             cls,
             data: Dict[str, str],
-            baseTag: Type[BaseTag],
-            tempTags: Dict[str, Type[BaseTag]] = None
+            base_tag: Type[BaseTag],
+            temp_tags: Dict[str, Type[BaseTag]] = None
     ):
         for i in data['content']:
             if type(i) is str:
                 continue
-            t = cls.allowedTags.get(i['name'].lower())
+            t = cls.allowed_tags.get(i['name'].lower())
             if t:
-                t.parse(i, baseTag, tempTags)
+                t.parse(i, base_tag, temp_tags)

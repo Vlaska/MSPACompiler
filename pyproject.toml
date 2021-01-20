@@ -20,7 +20,21 @@ pylama = "^7.7.1"
 flake8 = "^3.8.4"
 setuptools = "^51.1.2"
 pydot = "^1.4.1"
+taskipy = "^1.6.0"
+pytest-cov = "^2.11.0"
+vulture = "^2.3"
+rope = "^0.18.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.tasks]
+test = "pytest tests"
+ctest = "pytest --cov=TextCompiler tests --cov-report html --cov-report term-missing"
+format = "autopep8 -i -r TextCompiler"
+dead = "vulture TextCompiler --ignore-names visit_*,compile_css,getMatchGroup"
+
+[tool.autopep8]
+max_line_length = 79
+ignore = "E721"

@@ -12,8 +12,8 @@ class Defcode:
     @staticmethod
     def parse(
             data: Dict,
-            baseTag: Type[BaseTag],
-            tempTags: Dict[str, Type[BaseTag]] = None
+            base_tag: Type[BaseTag],
+            temp_tags: Dict[str, Type[BaseTag]] = None
     ):
         if not (
                 data['args'] and
@@ -23,10 +23,10 @@ class Defcode:
                 type(text := data['content'][0]) is str
         ):
             return
-        function = baseTag.lua.compileCode(text, baseTag.lua.baseScope)
-        baseTag.lua.addToScope(
-            baseTag.luaScope,
+        function = base_tag.lua.compileCode(text, base_tag.lua.baseScope)
+        base_tag.lua.addToScope(
+            base_tag.lua_scope,
             name,
             function,
-            tempTags is not None
+            temp_tags is not None
         )

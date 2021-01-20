@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Type, Dict, Union
+import logging
+from typing import Dict, List, Type, Union
 
+from .inputStringParser import parse as input_str_to_ast
 from .tags import BaseTag, Defines
 from .tags.textBlocks import TextBlocks
-from .inputStringParser import parse as inputStrToAst
-from sys import stderr
+
+logger = logging.getLogger(__name__)
 
 
 class TextCompiler:
@@ -20,7 +22,7 @@ class TextCompiler:
             Initial language tags. They will be present in all text blocks
             created after loading then in, by default ''
         """
-        self.baseTag = BaseTag.newClassInstance(self)
+        self.base_tag = BaseTag.new_instance(self)
         if tag_definitions:
             self.load_tags(tag_definitions)
 
@@ -38,14 +40,32 @@ class TextCompiler:
 
     def process_text(
             self,
-            text: Union[str, list],
-            use_tmp_tags: bool | Dict[str, Type[BaseTag]] = True
+            text: str,
+            use_tmp_tags: Union[bool, Dict[str, Type[BaseTag]]] = True
     ) -> str:
+        """Create abstract syntax tree from inputed text and pass it to futher
+        compilation
+
+        Parameters
+        ----------
+        text : str
+            Input text
+
+        use_tmp_tags : bool, optional
+            If there are defined new tags in input text, make them available
+            only while parsing this text, or save them permanently,
+            by default True
+
+        Returns
+        -------
+        str
+            Compiled text
+        """
         tmp_tags = {} if use_tmp_tags else None
-        ast: list = inputStrToAst(text)
+        ast: list = input_str_to_ast(text)
         result = self.__process_ast(ast, tmp_tags)
         if use_tmp_tags:
-            self.baseTag.lua.reset_tmp_code(self.baseTag.luaScope)
+            self.base_tag.lua.reset_tmp_code(self.base_tag.lua_scope)
         return result
 
     def __process_ast(
@@ -53,22 +73,37 @@ class TextCompiler:
             ast: List,
             tmp_tags: Dict[str, Type[BaseTag]]
     ) -> str:
+        """Recursievly process abstract syntax tree to build output text
+
+        Parameters
+        ----------
+        ast : List
+            Abstract syntax tree
+        tmp_tags : Dict[str, Type[BaseTag]]
+            Dictionary for storing temporary tags created during processing of
+            current input text
+
+        Returns
+        -------
+        str
+            Compiled text
+        """
         out = []
 
         for i in ast:
             if type(i) is dict:
                 name = i['name']
-                nameLower = name.lower()
-                if nameLower == 'defines':
-                    Defines.parse(i, self.baseTag, tmp_tags)
+                lower_name = name.lower()
+                if lower_name == 'defines':
+                    Defines.parse(i, self.base_tag, tmp_tags)
                 else:
-                    if tmp_tags is not None and nameLower in tmp_tags:
-                        tag = tmp_tags.get(nameLower)
+                    if tmp_tags is not None and lower_name in tmp_tags:
+                        tag = tmp_tags.get(lower_name)
                     else:
-                        tag = self.baseTag.tags.get(nameLower)
+                        tag = self.base_tag.tags.get(lower_name)
 
                     if tag is None:
-                        print(f'Unknown tag: {name}', file=stderr)  # ERROR LOG
+                        logger.warning(f'Unknown tag: {name}')
                         continue
 
                     i['content'] = [
@@ -97,24 +132,31 @@ class TextCompiler:
             Resulting text
         """
         text = self.process_text(text).strip()
-        return TextBlocks.ltGtEscapedRegex.sub(
-            TextBlocks.replaceEscapedLtGt,
+        return TextBlocks.lt_gt_escaped_regex.sub(
+            TextBlocks.replace_escaped_lt_gt,
             text
         )
 
     def compile_css(self) -> str:
+        """Compile css pressent in loaded tags
+
+        Returns
+        -------
+        str
+            CSS text
+        """
         out = []
         used = set()
 
-        def compile(t: dict):
+        def compile(t: Dict[str, Type[BaseTag]]):
             for i in t.values():
                 if i in used:
                     continue
                 used.add(i)
-                v = i.compileCSS()
+                v = i.compile_css()
                 if v:
                     out.append(v)
 
-        compile(self.baseTag.tags)
+        compile(self.base_tag.tags)
 
         return '\n'.join(out)

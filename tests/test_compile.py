@@ -26,8 +26,8 @@ def test_2(compiler: TextCompiler):
             [text :[code[c]:{text}]]
         ]
     ]''')
-    assert 'test' in compiler.baseTag.tags
-    codes_test = compiler.baseTag.tags['test'].codes
+    assert 'test' in compiler.base_tag.tags
+    codes_test = compiler.base_tag.tags['test'].codes
     assert len(codes_test) == 2
     text = compiler.compile('''[defines:
         [define[test_inherit, [code=2], [extends=test]]:
@@ -239,7 +239,7 @@ ugh, wygląda na to, że część z nich się pokrywa...'''
     ),
     (
         '', ''
-    )
+    ),
 ]
 
 
@@ -281,8 +281,8 @@ def test_4(compiler: TextCompiler):
 
 def test_5(u_compiler: TextCompiler):
     text = '''[defines:
-    [define[test, [], []]: [text:test]]
-    [define[test1, [], []]]
+    [define[test]: [text:test]]
+    [define[test1, []]]
     [macro[]]
     [macro[unknown]]
     [macro[unknown1=unknown]]
@@ -290,7 +290,7 @@ def test_5(u_compiler: TextCompiler):
     [macro[l1=test, l2=test1]]
 ]'''
     u_compiler.load_tags(text)
-    tags = u_compiler.baseTag.tags
+    tags = u_compiler.base_tag.tags
     assert len(tags) == 4
     assert tags['test'] is not tags['test1']
     assert tags['l1'] is tags['test']
@@ -300,3 +300,66 @@ def test_5(u_compiler: TextCompiler):
     [macro[l3=test, l4=l3]]
 ][l3] [l4]''')
     assert t == 'test test'
+
+
+@pytest.mark.parametrize('text,result', [
+    (
+        '''[defines:
+    [define[test, [], []]:
+        [ifNoText:PLACEHOLDER]
+    ]
+]
+[test :lorem ipsum]
+[test]''',
+        'lorem ipsum\nPLACEHOLDER'
+    ),
+    (
+        '''[defines:
+    [define[test, [], []]:
+        [ifNoText:PLACEHOLDER]
+        [text :begin {text} end]
+    ]
+]
+[test :lorem ipsum]
+[test]''',
+        'begin lorem ipsum end\nbegin PLACEHOLDER end'
+    ),
+])
+def test_6(u_compiler: TextCompiler, text, result):
+    t = u_compiler.compile(text)
+    assert t == result
+
+
+def test_7(u_compiler: TextCompiler):
+    u_compiler.load_tags('''[defines:
+    [define[]]
+]''')
+    assert len(u_compiler.base_tag.tags) == 0
+
+
+def test_8(u_compiler: TextCompiler):
+    u_compiler.load_tags('''[defines:
+    [define[test]:
+        [regex:test]
+        [regex[]:test]
+        [regex[[]]:test]
+        [regex[test1]]
+        [regex[test2]:[test:test]]
+        [regex[test3]:`test`]
+        [text :{text}]
+    ]
+]''')
+    assert u_compiler.base_tag.tags['test'].lua_scope.regex.test1 is None
+    assert u_compiler.base_tag.tags['test'].lua_scope.regex.test2 is None
+    assert u_compiler.base_tag.tags['test'].lua_scope.regex.test3 is not None
+
+
+def test_9(u_compiler: TextCompiler):
+    u_compiler.load_tags('''[defines:
+    [define[test]:
+        [replace['t'='a', ''='b', 'c'='']]
+    ]
+]''')
+    replace = u_compiler.base_tag.tags['test'].text_blocks.blocks[-1].replace
+    assert len(replace) == 1
+    assert ('t', 'a') in replace

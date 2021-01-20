@@ -4,14 +4,14 @@ from .innerBlock import InnerBlock
 
 
 class CodeTag(InnerBlock):
-    def __init__(self, argumentName: str, textFormat: str):
-        self.argumentName = argumentName
-        self.textFormat = textFormat
+    def __init__(self, argument_name: str, text_format: str):
+        self.argument_name = argument_name
+        self.text_format = text_format
 
     def __call__(self, text: str, arguments: Dict[str, str], codes) -> str:
         if not (
-                self.argumentName in arguments and
-                (t := arguments[self.argumentName]).isdecimal()
+                self.argument_name in arguments and
+                (t := arguments[self.argument_name]).isdecimal()
         ):
             return text
 

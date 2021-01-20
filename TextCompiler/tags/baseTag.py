@@ -11,22 +11,21 @@ if TYPE_CHECKING:
 
 
 class BaseTag:
-    textBlocks = TextBlocks([Block(
-        True,
-        False,
-        False,
-        ['{text}']
+    text_blocks = TextBlocks([Block(
+        is_safe=True,
+        split_lines=False,
+        strip_whitespaces=False,
+        initial_data=['{text}']
     )])
     tag_name = ''
     arguments = {}
-    wasBuild = True
-    isSafe = True
+    is_safe = True
 
     tags: Dict[str, Type[BaseTag]] = {}
     css: Dict[str, str] = {}
     codes = [lambda x: x.decode('utf-8'), ]
     lua = Lua()
-    luaScope = lua.createScope()
+    lua_scope = lua.createScope()
     parser = None
 
     @classmethod
@@ -34,7 +33,7 @@ class BaseTag:
         text = data['content']
         args = cls.processArgs(data['args'])
         try:
-            return [cls.textBlocks(i or '', args, cls.parser) for i in text]
+            return [cls.text_blocks(i or '', args, cls.parser) for i in text]
         except Exception as e:
             print(cls.tag_name)
             raise e
@@ -48,25 +47,25 @@ class BaseTag:
         return out
 
     @classmethod
-    def newClassInstance(cls, parser: TextCompiler) -> Type[BaseTag]:
+    def new_instance(cls, parser: TextCompiler) -> Type[BaseTag]:
         t: Type[BaseTag] = type('BaseTag', (BaseTag, ), {
-            'textBlocks': cls.textBlocks.copy(),
+            'textBlocks': cls.text_blocks.copy(),
             'arguments': {},
             'tags': {},
             'codes': [lambda x: x.decode('utf-8'), ],
             'parser': parser,
             'css': {}
         })
-        t.textBlocks.setParent(t)
+        t.text_blocks.set_parent(t)
         return t
 
     @classmethod
-    def compileCSS(cls) -> str:
+    def compile_css(cls) -> str:
         out = []
         for k, v in cls.css.items():
             out.append(f'.{cls.tag_name}{k} {{{v}}}')
         return '\n'.join(out)
 
 
-if not BaseTag.textBlocks.parent:
-    BaseTag.textBlocks.parent = BaseTag
+if not BaseTag.text_blocks.parent:
+    BaseTag.text_blocks.parent = BaseTag

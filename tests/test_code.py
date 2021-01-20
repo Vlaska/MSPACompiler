@@ -46,9 +46,9 @@ def test_2(u_compiler: TextCompiler):
 a: [test1:test]
 b: [test2[a="test"]:test]
 ''')
-    assert len(u_compiler.baseTag.luaScope._my) == 0
-    assert u_compiler.baseTag.luaScope.c
-    assert u_compiler.baseTag.luaScope.d
+    assert len(u_compiler.base_tag.lua_scope._my) == 0
+    assert u_compiler.base_tag.lua_scope.c
+    assert u_compiler.base_tag.lua_scope.d
     assert '3. test' in result
     assert '2. test' in result
     assert '4. test' in result

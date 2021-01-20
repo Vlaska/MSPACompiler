@@ -69,8 +69,6 @@ class Lua:
         self.cloneScope = self.lua.globals().cloneScope
         self.compileCode = self.lua.globals().compileCode
 
-        self.logger = logging.getLogger(__name__)
-
     def createScope(self):
         return self.cloneScope()
 

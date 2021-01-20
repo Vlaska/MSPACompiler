@@ -10,8 +10,8 @@ class Macro:
     @staticmethod
     def parse(
             data: Dict[str, str],
-            baseTag: Type[BaseTag],
-            tempTags: Dict[str, Type[BaseTag]] = None
+            base_tag: Type[BaseTag],
+            temp_tags: Dict[str, Type[BaseTag]] = None
     ):
         if not (data['args']):
             return
@@ -20,15 +20,15 @@ class Macro:
             for new, old in i.items():
                 new, old = new.lower(), old.lower()
 
-                if tempTags is not None:
-                    dst = tempTags
-                    if old in tempTags:
-                        src = tempTags
+                if temp_tags is not None:
+                    dst = temp_tags
+                    if old in temp_tags:
+                        src = temp_tags
                     else:
-                        src = baseTag.tags
+                        src = base_tag.tags
                 else:
-                    dst = baseTag.tags
-                    src = baseTag.tags
+                    dst = base_tag.tags
+                    src = base_tag.tags
 
                 if not (new and old) or new in dst:
                     continue

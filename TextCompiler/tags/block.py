@@ -13,25 +13,25 @@ if TYPE_CHECKING:
 class Block:
     def __init__(
             self,
-            isSafe: bool,
-            splitLines: bool,
-            stripWhitespaces: bool,
-            initialData: List[Union[str, Type[InnerBlock]]] = None,
+            is_safe: bool,
+            split_lines: bool,
+            strip_whitespaces: bool,
+            initial_data: List[Union[str, Type[InnerBlock]]] = None,
             ifNoText: str = ''
     ):
-        self.isSafe = isSafe
-        self.splitLines = splitLines
-        self.stripWhitespaces = stripWhitespaces
+        self.is_safe = is_safe
+        self.split_lines = split_lines
+        self.strip_whitespaces = strip_whitespaces
         self.blocks = []
         self.replace: List[Tuple[str, str]] = []
-        self.ifNoText = ifNoText
-        if initialData:
-            self.blocks.extend(initialData)
+        self.if_no_text = ifNoText
+        if initial_data:
+            self.blocks.extend(initial_data)
 
     def add(self, element: Union[str, Type[InnerBlock]]):
         self.blocks.append(element)
 
-    def addReplacements(self, data: List[Tuple[str, str]]):
+    def add_replacements(self, data: List[Tuple[str, str]]):
         self.replace.extend(data)
 
     def __call__(
@@ -40,30 +40,27 @@ class Block:
             arguments: Dict[str, str],
             parent: BaseTag
     ) -> str:
+        if not text and self.if_no_text:
+            text = self.if_no_text.format(**arguments)
+
+        inputText = text.splitlines() if self.split_lines else [text]
+
+        template = self.__compile_template(arguments)
+
+        result = self.__compile(inputText, template, arguments, parent)
+
+        for i in self.replace:
+            result = result.replace(*i)
+
+        if self.strip_whitespaces:
+            result = self.__strip_whitespaces(result)
+
+        return result
+
+    @staticmethod
+    def __compile(input_text, template, arguments, parent):
         out = []
-        template = []
-        templateString = ''
-
-        if not text and self.ifNoText:
-            text = self.ifNoText.format(**arguments)
-
-        inputText = text.splitlines() if self.splitLines else [text]
-
-        for i in self.blocks:
-            if type(i) is str:
-                templateString += i
-            elif isinstance(i, (IfTag)):
-                templateString += i(arguments)
-            else:
-                if templateString:
-                    template.append(templateString)
-                    templateString = ''
-                template.append(i)
-
-        if templateString:
-            template.append(templateString)
-
-        for i in inputText:
+        for i in input_text:
             result = ''
             for j in template:
                 if type(j) is str:
@@ -74,17 +71,34 @@ class Block:
             if result:
                 result = result.format(**arguments, text=i)
                 out.append(result)
+        return '\n'.join(out)
 
-        result = '\n'.join(out)
-        for i in self.replace:
-            result = result.replace(*i)
+    def __compile_template(self, arguments):
+        template = []
+        template_string = ''
 
-        if self.stripWhitespaces:
-            result = re.sub(r' +', ' ', result)
-            result = re.sub(r'\n+', '\n', result)
-            result = re.sub(r'\t+', '\t', result)
-            result = re.sub(r'\r+', '\r', result)
-            result = re.sub(r'\f+', '\f', result)
-            result = re.sub(r'\v+', '\v', result)
+        for i in self.blocks:
+            if type(i) is str:
+                template_string += i
+            elif isinstance(i, IfTag):
+                template_string += i(arguments)
+            else:
+                # if templateString:
+                #     template.append(templateString)
+                #     templateString = ''
+                template.append(i)
 
+        if template_string:
+            template.append(template_string)
+
+        return template
+
+    @staticmethod
+    def __strip_whitespaces(result):
+        result = re.sub(r' +', ' ', result)
+        result = re.sub(r'\n+', '\n', result)
+        result = re.sub(r'\t+', '\t', result)
+        result = re.sub(r'\r+', '\r', result)
+        result = re.sub(r'\f+', '\f', result)
+        result = re.sub(r'\v+', '\v', result)
         return result
