@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import pytest
 from arpeggio import NoMatch
-from TextCompiler.inputStringParser import parse
+from TextCompiler.parser import parse
 
 
 def test_1():

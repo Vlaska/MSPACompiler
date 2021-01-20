@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Type
+from typing import TYPE_CHECKING, Dict, Type, List
 
 if TYPE_CHECKING:
     from TextCompiler.tags.baseTag import BaseTag
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 class Macro:
     @staticmethod
     def parse(
-            data: Dict[str, str],
+            data: Dict[str, List[Dict[str, str]]],
             base_tag: Type[BaseTag],
             temp_tags: Dict[str, Type[BaseTag]] = None
     ):

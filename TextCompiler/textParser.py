@@ -3,9 +3,9 @@ from __future__ import annotations
 import logging
 from typing import Dict, List, Type, Union
 
-from .inputStringParser import parse as input_str_to_ast
+from .parser import parse as input_str_to_ast
 from .tags import BaseTag, Defines
-from .tags.textBlocks import TextBlocks
+from .tags.compiler import Compiler
 
 logger = logging.getLogger(__name__)
 
@@ -132,8 +132,8 @@ class TextCompiler:
             Resulting text
         """
         text = self.process_text(text).strip()
-        return TextBlocks.lt_gt_escaped_regex.sub(
-            TextBlocks.replace_escaped_lt_gt,
+        return Compiler.lt_gt_escaped_regex.sub(
+            Compiler.replace_escaped_lt_gt,
             text
         )
 

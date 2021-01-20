@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union, Type, List, Tuple, Dict
 import re
 
-from .innerBlock import InnerBlock
-from .ifTags import IfTag
+from TextCompiler.tags.blocks.innerBlock import InnerBlock
+from TextCompiler.tags.blocks.ifBlocks import IfBlock
 
 if TYPE_CHECKING:
-    from . import BaseTag
+    from TextCompiler.tags import BaseTag
 
 
 class Block:
@@ -80,7 +80,7 @@ class Block:
         for i in self.blocks:
             if type(i) is str:
                 template_string += i
-            elif isinstance(i, IfTag):
+            elif isinstance(i, IfBlock):
                 template_string += i(arguments)
             else:
                 # if templateString:

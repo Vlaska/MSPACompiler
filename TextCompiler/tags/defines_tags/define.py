@@ -5,17 +5,17 @@ from typing import Dict, Type, TYPE_CHECKING
 if TYPE_CHECKING:
     from TextCompiler.tags.baseTag import BaseTag
 
-from .block import Block
-from .codeTag import CodeTag
-from .ifTags import IfTag, IfNotTag
+from TextCompiler.tags.blocks.block import Block
+from TextCompiler.tags.blocks.codeBlock import CodeBlock
+from TextCompiler.tags.blocks.ifBlocks import IfBlock, IfNotBlock
 
 
 class Define:
     tag_name = 'define'
     allowedTags = {
-        'if': IfTag,
-        'ifnot': IfNotTag,
-        'code': CodeTag,
+        'if': IfBlock,
+        'ifnot': IfNotBlock,
+        'code': CodeBlock,
     }
 
     @classmethod

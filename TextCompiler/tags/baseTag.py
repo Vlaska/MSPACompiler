@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from typing import Dict, Type, TYPE_CHECKING
 
-from .block import Block
-from .textBlocks import TextBlocks
-from .luaExec import Lua
+from TextCompiler.tags.blocks.block import Block
+from TextCompiler.tags.compiler import Compiler
+from TextCompiler.lua import Lua
 
 if TYPE_CHECKING:
-    from ..textParser import TextCompiler
+    from TextCompiler.textParser import TextCompiler
 
 
 class BaseTag:
-    text_blocks = TextBlocks([Block(
+    text_blocks = Compiler([Block(
         is_safe=True,
         split_lines=False,
         strip_whitespaces=False,

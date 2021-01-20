@@ -2,7 +2,7 @@ from pathlib import Path
 from pprint import pprint
 
 from TextCompiler.textParser import TextCompiler
-from TextCompiler.inputStringParser import parse
+from TextCompiler.parser import parse
 
 t = TextCompiler(Path('./tags.mspa').read_text('utf-8'))
 

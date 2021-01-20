@@ -1,9 +1,9 @@
 from typing import Dict
 
-from .innerBlock import InnerBlock
+from TextCompiler.tags.blocks.innerBlock import InnerBlock
 
 
-class CodeTag(InnerBlock):
+class CodeBlock(InnerBlock):
     def __init__(self, argument_name: str, text_format: str):
         self.argument_name = argument_name
         self.text_format = text_format

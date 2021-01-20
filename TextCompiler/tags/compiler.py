@@ -3,13 +3,13 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Dict, List
 
-from .block import Block
+from TextCompiler.tags.blocks.block import Block
 
 if TYPE_CHECKING:
     from ..textParser import TextCompiler
 
 
-class TextBlocks:
+class Compiler:
     lt_gt_unescaped_regex = re.compile(r'(?:(?:\\\\|//)|(?<!\\|/))(?:[<>])')
     lt_gt_escaped_regex = re.compile(r'(?:\\|/)(?:[<>])')
     fix_lt_gt_text_regex = re.compile(r'&(?:gt|lt);', re.IGNORECASE)
@@ -50,10 +50,10 @@ class TextBlocks:
 
         return text
 
-    def __copy__(self) -> TextBlocks:
-        return TextBlocks(self.blocks.copy(), self.parent)
+    def __copy__(self) -> Compiler:
+        return Compiler(self.blocks.copy(), self.parent)
 
-    def copy(self) -> TextBlocks:
+    def copy(self) -> Compiler:
         return self.__copy__()
 
     def set_parent(self, parent):

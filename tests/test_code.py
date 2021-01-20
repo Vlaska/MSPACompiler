@@ -1,6 +1,6 @@
 from TextCompiler.textParser import TextCompiler
 import pytest
-from TextCompiler.tags.luaExec import Lua
+from TextCompiler.lua import Lua
 from lupa import LuaError
 from pathlib import Path
 
