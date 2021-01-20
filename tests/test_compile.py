@@ -1,5 +1,5 @@
 import pytest
-from TextCompiler.textParser import TextCompiler
+from TextCompiler.textCompiler import TextCompiler
 
 
 def test_1(compiler: TextCompiler):
@@ -360,6 +360,6 @@ def test_9(u_compiler: TextCompiler):
         [replace['t'='a', ''='b', 'c'='']]
     ]
 ]''')
-    replace = u_compiler.base_tag.tags['test'].text_blocks.blocks[-1].replace
+    replace = u_compiler.base_tag.tags['test'].compiler.blocks[-1].replace
     assert len(replace) == 1
     assert ('t', 'a') in replace

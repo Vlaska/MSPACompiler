@@ -49,7 +49,7 @@ class Define:
         arguments = {**parent_tag.arguments, **tag_arguments}
         codes = parent_tag.codes.copy()
         lua_scope = None
-        text_blocks = parent_tag.text_blocks.copy()
+        text_blocks = parent_tag.compiler.copy()
         css = {}
 
         if content and content[0]:
@@ -85,10 +85,10 @@ class Define:
             'lua_scope': lua_scope,
             'source': data,
             'is_safe': is_safe,
-            'text_blocks': text_blocks,
+            'compiler': text_blocks,
             'css': css,
         })
-        tag_class.text_blocks.set_parent(tag_class)
+        tag_class.compiler.set_parent(tag_class)
 
         (base_tag.tags if temp_tags is None else temp_tags).update(
             {tag_name: tag_class}

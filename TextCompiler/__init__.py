@@ -1,6 +1,6 @@
 import logging
 
-from .textParser import TextCompiler
+from .textCompiler import TextCompiler
 
 
 logging.basicConfig(level=logging.INFO)

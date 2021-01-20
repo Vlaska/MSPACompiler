@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Dict, List
 from TextCompiler.tags.blocks.block import Block
 
 if TYPE_CHECKING:
-    from ..textParser import TextCompiler
+    from ..textCompiler import TextCompiler
 
 
 class Compiler:

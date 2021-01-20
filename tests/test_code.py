@@ -1,4 +1,4 @@
-from TextCompiler.textParser import TextCompiler
+from TextCompiler.textCompiler import TextCompiler
 import pytest
 from TextCompiler.lua import Lua
 from lupa import LuaError

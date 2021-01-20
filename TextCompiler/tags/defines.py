@@ -11,6 +11,18 @@ from TextCompiler.tags.defines_tags.defcode import Defcode
 
 
 class Defines:
+    """Class responsible for analysing the content of "defines" tag.
+    Defines can only recognize these three tags: "define", "macro" and
+    "defcode".
+
+    Using "define" you can define a new tag, which can use previously defined
+    tag.
+
+    Using "macro" you can add additional name for previously created tags.
+
+    Using "defcode" you can create a lua function, which will be awailable for
+    all tags and code blocks defined in the future.
+    """
     allowed_tags = {
         'define': Define,
         'macro': Macro,
@@ -24,6 +36,19 @@ class Defines:
             base_tag: Type[BaseTag],
             temp_tags: Dict[str, Type[BaseTag]] = None
     ):
+        """Iterate over "defines" content and process recognized tags.
+
+        Parameters
+        ----------
+        data : Dict[str, str]
+            Content of "defines" tag
+
+        base_tag : Type[BaseTag]
+            Base tag
+
+        temp_tags : Dict[str, Type[BaseTag]], optional
+            Temporary tags, by default None
+        """
         for i in data['content']:
             if type(i) is str:
                 continue

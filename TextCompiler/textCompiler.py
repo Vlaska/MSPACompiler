@@ -110,7 +110,7 @@ class TextCompiler:
                         self.__process_ast(i['content'], tmp_tags)
                     ]
 
-                    t = tag.parse(i)
+                    t = tag.compile(i)
                     if t:
                         out.extend(t)
             elif i:
