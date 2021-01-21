@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from TextCompiler import TextCompiler
+from MSPACompiler import TextCompiler
 
 
 @pytest.fixture
@@ -11,4 +11,7 @@ def u_compiler():
 
 @pytest.fixture
 def compiler():
-    return TextCompiler(Path('./TextCompiler/tags.mspa').read_text('utf-8'))
+    return TextCompiler(
+        Path(
+            './MSPACompiler/default/tags.mspa'
+        ).read_text('utf-8'))

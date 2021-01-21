@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Type
 
-from TextCompiler.lua import Lua
-from TextCompiler.tags.blocks.block import Block
-from TextCompiler.tags.compiler import Compiler
+from MSPACompiler.lua import Lua
+from MSPACompiler.tags.blocks.block import Block
+from MSPACompiler.tags.compiler import Compiler
 
 if TYPE_CHECKING:
-    from TextCompiler.textCompiler import TextCompiler
+    from MSPACompiler.textCompiler import TextCompiler
 
 
 class BaseTag:

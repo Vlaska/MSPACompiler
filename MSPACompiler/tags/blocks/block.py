@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union, Type, List, Tuple, Dict
 import re
 
-from TextCompiler.tags.blocks.innerBlock import InnerBlock
-from TextCompiler.tags.blocks.ifBlocks import IfBlock
+from MSPACompiler.tags.blocks.innerBlock import InnerBlock
+from MSPACompiler.tags.blocks.ifBlocks import IfBlock
 
 if TYPE_CHECKING:
-    from TextCompiler.tags import BaseTag
-    from TextCompiler.tags.blocks.codeBlock import CodeBlock
+    from MSPACompiler.tags import BaseTag
+    from MSPACompiler.tags.blocks.codeBlock import CodeBlock
 
 
 class Block:

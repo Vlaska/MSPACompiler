@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import Callable, Dict, List, Type, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from TextCompiler.tags.blocks.innerBlock import InnerBlock
-    from TextCompiler.tags.baseTag import BaseTag
-    from TextCompiler.lua import Lua, LuaTable
+    from MSPACompiler.tags.blocks.innerBlock import InnerBlock
+    from MSPACompiler.tags.baseTag import BaseTag
+    from MSPACompiler.lua import Lua, LuaTable
 
-from TextCompiler.tags.blocks.block import Block
-from TextCompiler.tags.blocks.codeBlock import CodeBlock
-from TextCompiler.tags.blocks.ifBlocks import IfBlock, IfNotBlock
+from MSPACompiler.tags.blocks.block import Block
+from MSPACompiler.tags.blocks.codeBlock import CodeBlock
+from MSPACompiler.tags.blocks.ifBlocks import IfBlock, IfNotBlock
 
 
 class Define:
@@ -37,7 +37,7 @@ class Define:
             Arguments and content passed to `define` tag
 
         base_tag : `Type[BaseTag]`
-            Base tag stored in `TextCompiler`
+            Base tag stored in `MSPACompiler`
 
         temp_tags : `Dict[str, Type[BaseTag]]`, optional
             If new tag is temporary, place it inside of `temp_tags`,
@@ -159,7 +159,7 @@ class Define:
             Tag configuration options
 
         base_tag : `Type[BaseTag]`
-            Base tag stored in `TextCompiler`
+            Base tag stored in `MSPACompiler`
 
         Returns
         -------

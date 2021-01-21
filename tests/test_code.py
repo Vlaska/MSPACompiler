@@ -1,6 +1,6 @@
-from TextCompiler.textCompiler import TextCompiler
+from MSPACompiler.textCompiler import TextCompiler
 import pytest
-from TextCompiler.lua import Lua
+from MSPACompiler.lua import Lua
 from lupa import LuaError
 from pathlib import Path
 

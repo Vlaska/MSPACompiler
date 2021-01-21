@@ -1,5 +1,5 @@
 import pytest
-from TextCompiler.textCompiler import TextCompiler
+from MSPACompiler.textCompiler import TextCompiler
 
 
 def test_1(compiler: TextCompiler):

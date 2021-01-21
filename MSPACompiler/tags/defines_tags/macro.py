@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Type, List
 
 if TYPE_CHECKING:
-    from TextCompiler.tags.baseTag import BaseTag
+    from MSPACompiler.tags.baseTag import BaseTag
 
 
 class Macro:

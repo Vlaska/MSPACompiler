@@ -3,11 +3,11 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Dict, List, Type
 
-from TextCompiler.tags.blocks.block import Block
+from MSPACompiler.tags.blocks.block import Block
 
 if TYPE_CHECKING:
-    from TextCompiler.tags.baseTag import BaseTag
-    from TextCompiler.textCompiler import TextCompiler
+    from MSPACompiler.tags.baseTag import BaseTag
+    from MSPACompiler.textCompiler import TextCompiler
 
 
 class Compiler:

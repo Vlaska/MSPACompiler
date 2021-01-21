@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import Dict, Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from TextCompiler.tags.baseTag import BaseTag
+    from MSPACompiler.tags.baseTag import BaseTag
 
-from TextCompiler.tags.defines_tags.define import Define
-from TextCompiler.tags.defines_tags.macro import Macro
-from TextCompiler.tags.defines_tags.defcode import Defcode
+from MSPACompiler.tags.defines_tags.define import Define
+from MSPACompiler.tags.defines_tags.macro import Macro
+from MSPACompiler.tags.defines_tags.defcode import Defcode
 
 
 class Defines:

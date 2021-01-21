@@ -8,7 +8,7 @@ authors = ["Vlaska <vlaska8888@gmail.com>"]
 python = "^3.8"
 Arpeggio = "^1.10.1"
 lupa = "^1.9"
-python-i18n = "^0.3.9"
+click = "^7.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"
@@ -31,9 +31,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.taskipy.tasks]
 test = "pytest tests"
-ctest = "pytest --cov=TextCompiler tests --cov-report html --cov-report term-missing"
-format = "autopep8 -i -r TextCompiler"
-dead = "vulture TextCompiler --ignore-names visit_*,compile_css,getMatchGroup"
+ctest = "pytest --cov=MSPACompiler tests --cov-report html --cov-report term-missing"
+format = "autopep8 -i -r MSPACompiler"
+dead = "vulture MSPACompiler --ignore-names visit_*,compile_css,getMatchGroup"
 
 [tool.autopep8]
 max_line_length = 79

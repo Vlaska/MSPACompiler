@@ -1,6 +1,6 @@
 from typing import Dict
 
-from TextCompiler.tags.blocks.innerBlock import InnerBlock
+from MSPACompiler.tags.blocks.innerBlock import InnerBlock
 
 
 class IfBlock(InnerBlock):
