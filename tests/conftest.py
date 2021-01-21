@@ -11,4 +11,4 @@ def u_compiler():
 
 @pytest.fixture
 def compiler():
-    return TextCompiler(Path('./tags.mspa').read_text('utf-8'))
+    return TextCompiler(Path('./TextCompiler/tags.mspa').read_text('utf-8'))

@@ -7,12 +7,29 @@ if TYPE_CHECKING:
 
 
 class Macro:
+    """Create alternative name for user created tag
+    """
     @staticmethod
-    def parse(
+    def process(
             data: Dict[str, List[Dict[str, str]]],
             base_tag: Type[BaseTag],
             temp_tags: Dict[str, Type[BaseTag]] = None
     ):
+        """Create alternative name for user created tag
+
+        Parameters
+        ----------
+        data : `Dict[str, List[Dict[str, str]]]`
+            Dictionary containg list of dictionaries. Key is new name, value
+            is name if an existing tag
+
+        base_tag : `Type[BaseTag]`
+            BaseTag to which the alias will belong
+
+        temp_tags : `Dict[str, Type[BaseTag]]`, optional
+            If specified, alias will be awailable temporarily,
+            by default `None`
+        """
         if not (data['args']):
             return
 

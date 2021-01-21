@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import Dict, Type, TYPE_CHECKING
+from typing import Callable, Dict, List, Type, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
+    from TextCompiler.tags.blocks.innerBlock import InnerBlock
     from TextCompiler.tags.baseTag import BaseTag
+    from TextCompiler.lua import Lua, LuaTable
 
 from TextCompiler.tags.blocks.block import Block
 from TextCompiler.tags.blocks.codeBlock import CodeBlock
@@ -11,20 +13,41 @@ from TextCompiler.tags.blocks.ifBlocks import IfBlock, IfNotBlock
 
 
 class Define:
+    """Create new tag
+    """
     tag_name = 'define'
-    allowedTags = {
+    allowed_blocks = {
         'if': IfBlock,
         'ifnot': IfNotBlock,
         'code': CodeBlock,
     }
 
     @classmethod
-    def parse(
+    def process(
             cls,
             data: Dict,
             base_tag: Type[BaseTag],
             temp_tags: Dict[str, Type[BaseTag]] = None
-    ):
+    ) -> Type[BaseTag]:
+        """Create new tag
+
+        Parameters
+        ----------
+        data : `Dict`
+            Arguments and content passed to `define` tag
+
+        base_tag : `Type[BaseTag]`
+            Base tag stored in `TextCompiler`
+
+        temp_tags : `Dict[str, Type[BaseTag]]`, optional
+            If new tag is temporary, place it inside of `temp_tags`,
+            by default `None`
+
+        Returns
+        -------
+        `Type[BaseTag]`
+            New tag
+        """
         args = data['args']
 
         if len(args) < 1:
@@ -97,7 +120,23 @@ class Define:
         return tag_class
 
     @staticmethod
-    def __determin_if_safe(options, parent_tag: Type[BaseTag]):
+    def __determin_if_safe(
+        options: Dict[str, str],
+        parent_tag: Type[BaseTag]
+    ) -> bool:
+        """Determin if the tag will be safe for HTML
+
+        Parameters
+        ----------
+        options : `Dict[str, str]`
+            Tag configuration options
+        parent_tag : `Type[BaseTag]`
+            `BaseTag` from which new tag will inherit
+
+        Returns
+        -------
+        `bool`
+        """
         is_safe = None
         if 'unsafe' in options:
             is_safe = False
@@ -108,7 +147,24 @@ class Define:
         return is_safe
 
     @staticmethod
-    def __determin_base_class(options, base_tag: Type[BaseTag]):
+    def __determin_base_class(
+        options: Dict[str, str],
+        base_tag: Type[BaseTag]
+    ):
+        """Find base `BaseTag` from whom new tag will inherit
+
+        Parameters
+        ----------
+        options : `Dict[str, str]`
+            Tag configuration options
+
+        base_tag : `Type[BaseTag]`
+            Base tag stored in `TextCompiler`
+
+        Returns
+        -------
+        `Type[BaseTag]`
+        """
         parent_tag = None
         if 'extends' in options:
             parent_tag = base_tag.tags.get(options['extends'].lower())
@@ -117,7 +173,19 @@ class Define:
         return parent_tag
 
     @staticmethod
-    def __sort_inner_tags(content):
+    def __sort_inner_tags(content: Dict) -> Dict[str, List[Dict]]:
+        """Sort inner tags contained inside of `define` tag
+
+        Parameters
+        ----------
+        content : Dict
+            Content of the `define` tag
+
+        Returns
+        -------
+        `Dict[str, List[Dict]]`
+            Sorted content
+        """
         inner_tags = {
             'text': [],
             'defcode': [],
@@ -136,6 +204,19 @@ class Define:
 
     @staticmethod
     def __compile_regex(lua, lua_scope, regex):
+        """Compile regex which will be accessible inside of the lua functions
+
+        Parameters
+        ----------
+        lua : `Lua`
+            Instance of `Lua` interface
+
+        lua_scope : `LuaTable`
+            Scope, to which the function will belong
+
+        regex : `str`
+            Regex expression
+        """
         for i in regex:
             if not (
                     i['args'] and
@@ -146,10 +227,31 @@ class Define:
             ):
                 continue
             regex_name = list(i['args'][0])[0]
-            lua.compileRegex(lua_scope, regex_name, t)
+            lua.compile_regex(lua_scope, regex_name, t)
 
     @staticmethod
-    def __compile_code(lua, lua_scope, code_srcs, codes):
+    def __compile_code(
+        lua: Lua,
+        lua_scope: LuaTable,
+        code_srcs: str,
+        codes: List[Callable]
+    ):
+        """Compile codes present in the `define` tag
+
+        Parameters
+        ----------
+        lua : `Lua`
+            Instance of `Lua` interface
+
+        lua_scope : `LuaTable`
+            Scope, to which the function will belong
+
+        code_srcs : `str`
+            Source code of the function
+
+        codes : `List[Callable]`
+            List of functions beloning to the new tag
+        """
         for i in code_srcs:
             if not (
                     i['content'] and
@@ -162,7 +264,19 @@ class Define:
                 codes.append(func)
 
     @staticmethod
-    def __process_css(css):
+    def __process_css(css) -> Dict[str, str]:
+        """Process CSS present in 'define' tag
+
+        Parameters
+        ----------
+        css : `List[Dict[str, str]]`
+            Definitions of CSS classes
+
+        Returns
+        -------
+        `Dict[str, str]`
+            CSS classes
+        """
         out = {}
         for i in css:
             name = list(i['args'][0])[0] if i['args'] else ''
@@ -174,7 +288,21 @@ class Define:
         return out
 
     @staticmethod
-    def __process_before_text(inner_tags):
+    def __process_before_text(inner_tags: Dict) -> str:
+        """Process `ifNoText` and `replace` tags in `define` tag. If no `text`
+        tag is pressent inside `define` and `ifNoText` or `replace` contains
+        some values, `text` will have default value of `'{text}'`
+
+        Parameters
+        ----------
+        inner_tags : Dict
+            Sorted tags present inside of `define` tag
+
+        Returns
+        -------
+        `str`
+            Value of `ifNoText` tag
+        """
         if_no_tags = ''
         if inner_tags['ifnotext'] and \
                 (t := inner_tags['ifnotext'][0]['content']) and \
@@ -191,14 +319,39 @@ class Define:
     @classmethod
     def __process_text(
         cls,
-        text_blocks,
-        text,
-        replace,
-        is_safe,
-        split_lines,
-        strip_whitespaces,
-        if_no_text
+        text_blocks: List[Block],
+        text: List[Dict[str, Union[str, Type[InnerBlock]]]],
+        replace: List[Dict[str, str]],
+        is_safe: bool,
+        split_lines: bool,
+        strip_whitespaces: bool,
+        if_no_text: str
     ):
+        """Create new text `Block`
+
+        Parameters
+        ----------
+        text_blocks : `List[Block]`
+            List of `Block`s to which new `Block` will be added
+
+        text : `List[Dict[str, Union[str, Type[InnerBlock]]]]`
+            Content of the `text` tag inside of `define`
+
+        replace : `List[Dict[str, str]]`
+            Arguments of the `replace` tag inside `define`
+
+        is_safe : `bool`
+            Whether to convert unescaped '<' and '>' to their '&gt;' and '&lt;'
+
+        split_lines : `bool`
+            Process each line separately
+
+        strip_whitespaces : `bool`
+            Remove trailing whitespaces
+
+        if_no_text : `str`
+            Text to be used if tag contains no text
+        """
         new_text_block = Block(
             is_safe,
             split_lines,
@@ -213,14 +366,14 @@ class Define:
             else:
                 inner_tag_name = i['name'].lower()
                 if not (
-                        inner_tag_name in cls.allowedTags and
+                        inner_tag_name in cls.allowed_blocks and
                         i['args'][0] and
                         (key := list(i['args'][0])[0]) and
                         i['content'] and
                         type(i['content'][0]) is str
                 ):
                     continue
-                constructor = cls.allowedTags[inner_tag_name]
+                constructor = cls.allowed_blocks[inner_tag_name]
                 val = i['content'][0] or ''
                 new_text_block.add(constructor(key, val))
 

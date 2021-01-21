@@ -18,9 +18,9 @@ class TextCompiler:
 
         Parameters
         ----------
-        tag_definitions : str, optional
+        tag_definitions : `str`, optional
             Initial language tags. They will be present in all text blocks
-            created after loading then in, by default ''
+            created after loading then in, by default `''`
         """
         self.base_tag = BaseTag.new_instance(self)
         if tag_definitions:
@@ -33,7 +33,7 @@ class TextCompiler:
 
         Parameters
         ----------
-        tag_definitions : str
+        tag_definitions : `str`
             String containing tag definitions.
         """
         self.process_text(tag_definitions, False)
@@ -48,17 +48,17 @@ class TextCompiler:
 
         Parameters
         ----------
-        text : str
+        text : `str`
             Input text
 
-        use_tmp_tags : bool, optional
+        use_tmp_tags : `bool`, optional
             If there are defined new tags in input text, make them available
             only while parsing this text, or save them permanently,
-            by default True
+            by default `True`
 
         Returns
         -------
-        str
+        `str`
             Compiled text
         """
         tmp_tags = {} if use_tmp_tags else None
@@ -73,19 +73,19 @@ class TextCompiler:
             ast: List,
             tmp_tags: Dict[str, Type[BaseTag]]
     ) -> str:
-        """Recursievly process abstract syntax tree to build output text
+        """Recursively process abstract syntax tree to build output text
 
         Parameters
         ----------
-        ast : List
+        ast : `List`
             Abstract syntax tree
-        tmp_tags : Dict[str, Type[BaseTag]]
+        tmp_tags : `Dict[str, Type[BaseTag]]`
             Dictionary for storing temporary tags created during processing of
             current input text
 
         Returns
         -------
-        str
+        `str`
             Compiled text
         """
         out = []
@@ -123,12 +123,12 @@ class TextCompiler:
 
         Parameters
         ----------
-        text : str
+        text : `str`
             Text to be compiled
 
         Returns
         -------
-        str
+        `str`
             Resulting text
         """
         text = self.process_text(text).strip()
@@ -142,7 +142,7 @@ class TextCompiler:
 
         Returns
         -------
-        str
+        `str`
             CSS text
         """
         out = []

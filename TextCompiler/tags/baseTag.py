@@ -11,6 +11,17 @@ if TYPE_CHECKING:
 
 
 class BaseTag:
+    """Base class from which all user defined tags inherit from.
+
+    Raises
+    ------
+    e
+        Exception raised, when:
+
+            - user defined code throws an error
+            - placeholder defined in text contains Python keyword
+    """
+
     compiler: Compiler = Compiler([Block(
         is_safe=True,
         split_lines=False,
@@ -25,15 +36,31 @@ class BaseTag:
     css: Dict[str, str] = {}
     codes = [lambda x: x.decode('utf-8'), ]
     lua = Lua()
-    lua_scope = lua.createScope()
-    parser: TextCompiler = None
+    lua_scope = lua.create_scope()
 
     @classmethod
     def compile(cls, data: Dict[str, str]) -> List[str]:
+        """Compile content of a user defined tag
+
+        Parameters
+        ----------
+        data : `Dict[str, str]`
+            Data contained inside the tag
+
+        Returns
+        -------
+        `List[str]`
+            List of strings compiled from the content of tag
+
+        Raises
+        ------
+        e
+            Exception raised, when user defined code throws an error
+        """
         text = data['content']
         args = cls.processArgs(data['args'])
         try:
-            return [cls.compiler(i or '', args, cls.parser) for i in text]
+            return [cls.compiler(i or '', args) for i in text]
         except Exception as e:
             print(cls.tag_name)
             raise e
@@ -45,12 +72,12 @@ class BaseTag:
 
         Parameters
         ----------
-        args : Dict[str, str]
+        args : `Dict[str, str]`
             Arguments passed when tag was called
 
         Returns
         -------
-        Dict[str, str]
+        `Dict[str, str]`
             Processed arguments
         """
         out = cls.arguments.copy()
@@ -66,13 +93,13 @@ class BaseTag:
 
         Parameters
         ----------
-        parser : TextCompiler
-            Text compiler to which BaseTag instance belongs.
+        parser : `TextCompiler`
+            Text compiler to which `BaseTag` instance belongs.
 
         Returns
         -------
-        Type[BaseTag]
-            New instance of BaseTag
+        `Type[BaseTag]`
+            New instance of `BaseTag`
         """
         t: Type[BaseTag] = type('BaseTag', (BaseTag, ), {
             'compiler': cls.compiler.copy(),
@@ -91,7 +118,7 @@ class BaseTag:
 
         Returns
         -------
-        str
+        `str`
             Compiled css
         """
         out = []

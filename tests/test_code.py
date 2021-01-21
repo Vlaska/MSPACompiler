@@ -83,3 +83,13 @@ def test_3(u_compiler: TextCompiler):
     )
     with pytest.raises(LuaError, match="attempt to perform arithmetic"):
         u_compiler.compile('[test:text]')
+
+
+def test_4(u_compiler: TextCompiler):
+    u_compiler.load_tags('''[defines:
+    [define[test, [q=1]]:
+        [defcode :` function (text) return string.reverse(text) end`]
+        [text :example [code[q] :{text} end]]
+    ]
+]''')
+    assert u_compiler.compile('[test:begin]') == 'example dne nigeb'
