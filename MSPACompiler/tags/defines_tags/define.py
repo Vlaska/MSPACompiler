@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Callable, Dict, List, Type, TYPE_CHECKING, Union
 
+from loguru import logger
+
 if TYPE_CHECKING:
     from MSPACompiler.tags.blocks.innerBlock import InnerBlock
     from MSPACompiler.tags.baseTag import BaseTag
@@ -81,10 +83,11 @@ class Define:
             if len(inner_tags['defcode']) or len(inner_tags['regex']):
                 lua_scope = parent_tag.lua.cloneScope(parent_tag.lua_scope)
 
-            cls.__compile_regex(base_tag.lua, lua_scope, inner_tags['regex'])
+            cls.__compile_regex(base_tag.lua, lua_scope,
+                                inner_tags['regex'], tag_name)
 
             cls.__compile_code(base_tag.lua, lua_scope,
-                               inner_tags['defcode'], codes)
+                               inner_tags['defcode'], codes, tag_name)
 
             css = cls.__process_css(inner_tags['css'])
 
@@ -203,7 +206,7 @@ class Define:
         return inner_tags
 
     @staticmethod
-    def __compile_regex(lua, lua_scope, regex):
+    def __compile_regex(lua, lua_scope, regex, tag_name: str):
         """Compile regex which will be accessible inside of the lua functions
 
         Parameters
@@ -227,14 +230,23 @@ class Define:
             ):
                 continue
             regex_name = list(i['args'][0])[0]
-            lua.compile_regex(lua_scope, regex_name, t)
+            try:
+                lua.compile_regex(lua_scope, regex_name, t)
+            except Exception as e:
+                logger.error(
+                    f'Error while compiling regex "{regex_name}" in tag '
+                    f'{tag_name}.\n'
+                    f'Regex expression: "{t}"'
+                )
+                raise e
 
     @staticmethod
     def __compile_code(
         lua: Lua,
         lua_scope: LuaTable,
         code_srcs: str,
-        codes: List[Callable]
+        codes: List[Callable],
+        tag_name: str
     ):
         """Compile codes present in the `define` tag
 
@@ -259,9 +271,16 @@ class Define:
                     type(t) is str
             ):
                 continue
-            func = lua.compileCode(t, lua_scope)
-            if func:
-                codes.append(func)
+            try:
+                func = lua.compileCode(t, lua_scope)
+                if func:
+                    codes.append(func)
+            except Exception as e:
+                logger.error(
+                    f'Error while compiling function in tag <r>{tag_name}.'
+                    f'\nCode of the function: ```{t}```'
+                )
+                raise e
 
     @staticmethod
     def __process_css(css) -> Dict[str, str]:

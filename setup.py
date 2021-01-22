@@ -10,6 +10,6 @@ setup(
     install_requires=['Arpeggio', 'lupa', 'click'],
     entry_points='''
     [console_scripts]
-    mspac=MSPACompiler.__main__:cli
+    mspac=MSPACompiler.scripts.mspac:mspac
     '''
 )

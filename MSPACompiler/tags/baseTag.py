@@ -1,10 +1,13 @@
 from __future__ import annotations
+import logging
 
 from typing import TYPE_CHECKING, Dict, List, Type
 
 from MSPACompiler.lua import Lua
 from MSPACompiler.tags.blocks.block import Block
 from MSPACompiler.tags.compiler import Compiler
+
+from loguru import logger
 
 if TYPE_CHECKING:
     from MSPACompiler.textCompiler import TextCompiler
@@ -62,7 +65,10 @@ class BaseTag:
         try:
             return [cls.compiler(i or '', args) for i in text]
         except Exception as e:
-            print(cls.tag_name)
+            logger.error(
+                'There was an error while compiling content of '
+                f'"{cls.tag_name}" tag'
+            )
             raise e
 
     @classmethod

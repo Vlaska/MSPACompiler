@@ -1,6 +1,6 @@
-import logging
 import re
-from pathlib import Path
+from pkgutil import get_data
+from loguru import logger
 
 import lupa
 
@@ -27,11 +27,13 @@ class Lua:
         )
 
         try:
-            path = Path(__file__).with_name('libs')
-            quirkbase = (path / 'quirkbase.lua').read_text()
+            quirkbase = get_data(
+                __name__, 'libs/quirkbase.lua'
+            ).decode('utf-8')
             self.lua.execute(quirkbase)
-        except lupa.LuaSyntaxError:
-            raise Exception('Error while importing base functions.')
+        except Exception:
+            logger.critical('Error while initializing lua interpreter.')
+            raise Exception('Error while initializing lua interpreter.')
 
         # Allow lua access to the python string methods
         self.lua.globals().def_scope.str = {

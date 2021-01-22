@@ -98,14 +98,6 @@ class Visitor(PTNodeVisitor):
             text = children[1]
         if not isinstance(text, list):
             text = [text]
-        # else:
-        #     _text = []
-        #     for i in text:
-        #         if isinstance(i, list):
-        #             _text.extend(i)
-        #         else:
-        #             _text.append(i)
-        #     text = _text
         name, args = children[0]
         return {
             'name': name,

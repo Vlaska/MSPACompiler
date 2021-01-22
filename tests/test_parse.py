@@ -1,4 +1,5 @@
 from textwrap import dedent
+from loguru import logger
 
 import pytest
 from arpeggio import NoMatch
@@ -76,7 +77,7 @@ def test_3(bracket, value):
     ]
 )
 def test_4(text):
-    with pytest.raises(NoMatch):
+    with pytest.raises(NoMatch) as e:
         parse(text)
 
 

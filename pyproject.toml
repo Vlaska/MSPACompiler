@@ -9,6 +9,7 @@ python = "^3.8"
 Arpeggio = "^1.10.1"
 lupa = "^1.9"
 click = "^7.1.2"
+loguru = "^0.5.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"
@@ -24,6 +25,7 @@ taskipy = "^1.6.0"
 pytest-cov = "^2.11.0"
 vulture = "^2.3"
 rope = "^0.18.0"
+loguru-caplog = "^0.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

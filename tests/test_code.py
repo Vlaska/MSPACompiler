@@ -1,16 +1,15 @@
 from MSPACompiler.textCompiler import TextCompiler
 import pytest
-from MSPACompiler.lua import Lua
+from MSPACompiler import lua
 from lupa import LuaError
-from pathlib import Path
 
 
 def test_lua_load(monkeypatch):
-    code = ';kjnbgdfropij12opj0239-dfg]poawfddszf'
-    monkeypatch.setattr(Path, 'read_text', lambda *args, **kwargs: code)
+    code = b';kjnbgdfropij12opj0239-dfg]poawfddszf'
+    monkeypatch.setattr(lua, 'get_data', lambda *args, **kwargs: code)
 
-    with pytest.raises(Exception, match="while importing base"):
-        Lua()
+    with pytest.raises(Exception, match='initializing lua interpreter'):
+        lua.Lua()
 
 
 def test_2(u_compiler: TextCompiler):
@@ -58,7 +57,7 @@ b: [test2[a="test"]:test]
 
 
 def test_3(u_compiler: TextCompiler):
-    with pytest.raises(LuaError):
+    with pytest.raises(Exception):
         u_compiler.compile(
             '''[defines:
         [define[test, [a=1], []]:

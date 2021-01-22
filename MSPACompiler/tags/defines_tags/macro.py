@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Type, List
 
+from loguru import logger
+
 if TYPE_CHECKING:
     from MSPACompiler.tags.baseTag import BaseTag
 
@@ -48,6 +50,16 @@ class Macro:
                     src = base_tag.tags
 
                 if not (new and old) or new in dst:
+                    if not old:
+                        logger.info(
+                            'Missing name of the tag, that the alias will '
+                            'belong'
+                        )
+                    if new in dst:
+                        logger.info(
+                            f'Tag/macro with name {new} already exists. '
+                            'Skipping...'
+                        )
                     continue
 
                 tag = src.get(old)

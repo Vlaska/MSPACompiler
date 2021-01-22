@@ -6,8 +6,7 @@ from typing import Dict, List, Type, Union
 from .parser import parse as input_str_to_ast
 from .tags import BaseTag, Defines
 from .tags.compiler import Compiler
-
-logger = logging.getLogger(__name__)
+from loguru import logger
 
 
 class TextCompiler:
@@ -103,7 +102,7 @@ class TextCompiler:
                         tag = self.base_tag.tags.get(lower_name)
 
                     if tag is None:
-                        logger.warning(f'Unknown tag: {name}')
+                        logger.info(f'Unknown tag: {name}')
                         continue
 
                     i['content'] = [

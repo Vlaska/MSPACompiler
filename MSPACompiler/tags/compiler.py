@@ -7,7 +7,6 @@ from MSPACompiler.tags.blocks.block import Block
 
 if TYPE_CHECKING:
     from MSPACompiler.tags.baseTag import BaseTag
-    from MSPACompiler.textCompiler import TextCompiler
 
 
 class Compiler:

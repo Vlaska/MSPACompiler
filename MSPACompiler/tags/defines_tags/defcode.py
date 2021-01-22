@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import Dict, Type, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Type
+
+from loguru import logger
+from lupa import LuaError
 
 if TYPE_CHECKING:
     from MSPACompiler.tags.baseTag import BaseTag
@@ -39,10 +42,17 @@ class Defcode:
                 type(text := data['content'][0]) is str
         ):
             return
-        function = base_tag.lua.compileCode(text, base_tag.lua.base_scope)
-        base_tag.lua.add_to_scope(
-            base_tag.lua_scope,
-            name,
-            function,
-            temp_tags is not None
-        )
+        try:
+            function = base_tag.lua.compileCode(text, base_tag.lua.base_scope)
+            base_tag.lua.add_to_scope(
+                base_tag.lua_scope,
+                name,
+                function,
+                temp_tags is not None
+            )
+        except Exception as e:
+            logger.error(
+                f'Error while compiling function "{name}".\n'
+                f'\nSource of the function: ```{text}```'
+            )
+            raise e

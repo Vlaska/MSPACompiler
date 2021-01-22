@@ -363,3 +363,10 @@ def test_9(u_compiler: TextCompiler):
     replace = u_compiler.base_tag.tags['test'].compiler.blocks[-1].replace
     assert len(replace) == 1
     assert ('t', 'a') in replace
+
+
+def test_10(u_compiler: TextCompiler):
+    with pytest.raises(Exception, match='Compilation error'):
+        u_compiler.load_tags('''[defines:
+        [defcode[test] :`gfdfgn[p;]`]
+    ]''')
