@@ -9,9 +9,41 @@ from typing import Tuple
 import click
 from MSPACompiler.textCompiler import TextCompiler
 from loguru import logger
+from .mspac import mspac
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+@click.argument(
+    'src',
+    type=click.Path(exists=True, file_okay=True, dir_okay=False,
+                    readable=True, resolve_path=True, allow_dash=False),
+    nargs=-1,
+)
+@click.option(
+    '--out',
+    '-o',
+    nargs=1,
+    type=click.Path(writable=True, resolve_path=True, allow_dash=True),
+    default='-',
+    help='Name of the output file. STDOUT by default.'
+)
+@click.option(
+    '--load-default',
+    '-l',
+    is_flag=True,
+    help='Load default tag definitions.'
+)
+def css(src):
+    """Compile css present in tags"""
+    pass
+
+
+@cli.command()
 @click.argument(
     'src',
     type=click.Path(exists=True, file_okay=True, dir_okay=False,
@@ -44,52 +76,43 @@ from loguru import logger
     multiple=True,
     type=click.Path(writable=True, resolve_path=True, allow_dash=False)
 )
-def mspac(
+@click.pass_context
+def compiler(
+    ctx,
     src: str,
     out: str,
     verbose: bool,
     load_default: bool,
     definitions: Tuple[str]
 ):
-
     """Compile tags to text"""
-    if verbose:
-        verbosity_level = 'INFO'
-    else:
-        verbosity_level = 'ERROR'
-    logger.remove()
-    logger.add(
-        sys.stderr,
-        level=verbosity_level,
-        format='<level>{level}</level>: {message}'
+    ctx.invoke(
+        mspac,
+        src=src,
+        out=out,
+        verbose=verbose,
+        load_default=load_default,
+        definitions=definitions,
     )
 
-    src_file = Path(src)
-    if src_file.stat().st_size == 0:
-        exit(0)
 
-    compiler = TextCompiler()
-    try:
-        if load_default:
-            default_definitions = get_data(
-                'MSPACompiler', 'default/tags.mspa'
-            ).decode('utf-8')
-            compiler.load_tags(default_definitions)
+@cli.command()
+def examples():
+    """Copy examples to current folder"""
+    pass
 
-        for i in definitions:
-            data = Path(i).read_text('utf-8')
-            compiler.load_tags(data)
 
-        out_text = compiler.compile(src_file.read_text('utf-8'))
-    except Exception:
-        # logger.exception('t')
-        exit(1)
+@cli.command()
+def default():
+    """Copy default tags definitions ("tags.mspa" file) to current folder"""
+    pass
 
-    if out == '-':
-        print(out_text)
-    else:
-        Path(out).write_text(out_text, 'utf-8')
+
+@cli.command()
+def clear():
+    """Clear parsers cache"""
+    pass
 
 
 if __name__ == "__main__":
-    mspac()
+    cli()

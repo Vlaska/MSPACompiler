@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import logging
 from typing import Dict, List, Type, Union
 
+from loguru import logger
+
+from .parser import caching_parser
 from .parser import parse as input_str_to_ast
 from .tags import BaseTag, Defines
 from .tags.compiler import Compiler
-from loguru import logger
 
 
 class TextCompiler:
@@ -35,7 +36,12 @@ class TextCompiler:
         tag_definitions : `str`
             String containing tag definitions.
         """
-        self.process_text(tag_definitions, False)
+        ast: List = [
+            i
+            for i in caching_parser(tag_definitions)
+            if type(i) is dict and i['name'] == 'defines'
+        ]
+        self.__process_ast(ast, None)
 
     def process_text(
             self,
@@ -61,7 +67,7 @@ class TextCompiler:
             Compiled text
         """
         tmp_tags = {} if use_tmp_tags else None
-        ast: list = input_str_to_ast(text)
+        ast: List = input_str_to_ast(text)
         result = self.__process_ast(ast, tmp_tags)
         if use_tmp_tags:
             self.base_tag.lua.reset_tmp_code(self.base_tag.lua_scope)

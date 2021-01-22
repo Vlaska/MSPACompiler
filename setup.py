@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='MSPA-Compiler',
-    version='1.1.1',
+    version='1.2.0',
     packages=find_packages(),
     include_package_data=True,
     author='Vlaska',
@@ -11,5 +11,6 @@ setup(
     entry_points='''
     [console_scripts]
     mspac=MSPACompiler.scripts.mspac:mspac
+    mspa=MSPACompiler.scripts.mspa:cli
     '''
 )

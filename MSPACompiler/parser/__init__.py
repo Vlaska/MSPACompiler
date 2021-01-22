@@ -1,12 +1,16 @@
+import json
+import re
+from typing import List
+
 from arpeggio import NoMatch, ParserPython, visit_parse_tree
+from fcache.cache import FileCache
 from loguru import logger
 
 from .parseRules import entrypoint
 from .treeVisitor import Visitor
-import re
-
 
 NEW_LINE_FIX = re.compile('\r\n|\r')
+CACHE = FileCache(__name__)
 
 rules = {
     'ws': ['spaces'],
@@ -39,7 +43,7 @@ rules = {
 }
 
 
-def parse(text: str):
+def parse(text: str) -> List:
     parser = ParserPython(
         entrypoint,
         debug=False,
@@ -63,3 +67,13 @@ def parse(text: str):
             f'Line: {e.line}, col: {e.col}. Expecting: ' + ', '.join(t)
         )
         raise e
+
+
+def caching_parser(text: str) -> List:
+    name = str(hash(text))
+    try:
+        return json.loads(CACHE[name])
+    except KeyError:
+        out = parse(text)
+        CACHE[name] = json.dumps(out)
+        return out
