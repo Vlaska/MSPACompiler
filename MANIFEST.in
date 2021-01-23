@@ -1,5 +1,6 @@
-include *.lua
-include *.mspa
+graft MSPACompiler/lua/lib
+graft MSPACompiler/default
+graft MSPACompiler/examples
 
 include pyproject.toml
 include setup.py
