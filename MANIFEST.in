@@ -1,2 +1,7 @@
-graft TextCompiler/tags/luaExec/libs
-graft TextCompiler
+include *.lua
+include *.mspa
+
+include pyproject.toml
+include setup.py
+
+global-exclude *.py[cod]$ {2:.DS_Store}

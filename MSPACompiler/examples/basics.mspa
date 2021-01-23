@@ -1,0 +1,18 @@
+[text :To compile the file, you can use command "mspa compile" or "mspac" and path to the file you want to compile.
+
+To correctly compile all examples, you must supply flag "-l", which will load default tags.
+
+You can also supply the location, where the output will go. If not specified, it will be printed in console.
+You can specify the output path using "-o \[path\]" flag.
+
+e.g: mspa 01.mspa -l
+
+This command will compile the file 01.mspa and print the result to the console.
+
+<hr/>
+
+"mspa" script allows for general operations with compiler.
+
+"mspac" can only be used for compilation.
+
+If you want to know all posible options for compiler you can use "-h" or "--help" flag on "mspa" and "mspac"]

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "TextCompiler"
+name = "MSPACompiler"
 version = "1.2.0"
 description = ""
 authors = ["Vlaska <vlaska8888@gmail.com>"]
