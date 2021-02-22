@@ -2,6 +2,8 @@ graft MSPACompiler/lua/lib
 graft MSPACompiler/default
 graft MSPACompiler/examples
 
+include MSPACompiler/**/*.lua
+include MSPACompiler/**/*.mspa
 include pyproject.toml
 include setup.py
 

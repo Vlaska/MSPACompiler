@@ -94,7 +94,7 @@ d = ["aiohttp (>=3.3.2)", "aiohttp-cors"]
 name = "click"
 version = "7.1.2"
 description = "Composable command line interface toolkit"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -583,7 +583,7 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "cbc244745b3ed24ed35a599f70490be67c24054cb1dfb9c2e6c01f5ddced36a0"
+content-hash = "3a86a8f4e4cb77adc033841575fbeefab349125eec25f6d18f28c5f15adf3b9f"
 
 [metadata.files]
 appdirs = [
