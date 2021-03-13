@@ -52,14 +52,9 @@ def test_3(bracket, value):
 @pytest.mark.parametrize(
     'text',
     [
-        '[test: test if i have to have closing bracket',
         '[t["\']]',
-        '''[test:
-
-        ''',
         '[:test]',
         '[ :test]',
-        '[test',
         '[tag name with spaces]',
         '[[]',
         '[]]',
@@ -68,8 +63,6 @@ def test_3(bracket, value):
         '[',
         '[[',
         '[[test[',
-        '[test[]',
-        '[test[[]]',
         '[test["test""test"]]',
         "[test['test''test']]",
         "[test['test'\"test\"]]",
@@ -135,3 +128,16 @@ def test_6():
             "back to single line"
         ]
     }
+
+
+@pytest.mark.parametrize('text', [
+    '[test: test if i have to have closing bracket',
+    '''[test:
+
+    ''',
+    '[test[]',
+    '[test[[]]',
+    '[test',
+])
+def test_missing_ending_bracket(text):
+    parse(text)
