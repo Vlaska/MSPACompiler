@@ -91,7 +91,7 @@ def tagSelected():
         beginTag,
         ar.OneOrMore(tag, sep=separator),
         ar.Optional(':', text),
-        endTag
+        [endTag, ar.EOF]
     )
 
 
