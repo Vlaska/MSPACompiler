@@ -1,6 +1,6 @@
 import json
 import re
-from typing import List
+from typing import Collection, Dict, List, Union
 
 from arpeggio import NoMatch, ParserPython, visit_parse_tree
 from fcache.cache import FileCache
@@ -11,6 +11,8 @@ from .treeVisitor import Visitor
 
 NEW_LINE_FIX = re.compile('\r\n|\r')
 CACHE = FileCache(__name__)
+
+AST = List[Dict[str, Collection[Collection[str]]]]
 
 rules = {
     'ws': ['spaces'],

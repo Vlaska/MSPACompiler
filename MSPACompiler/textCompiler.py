@@ -4,7 +4,7 @@ from typing import Dict, List, Type, Union
 
 from loguru import logger
 
-from .parser import caching_parser
+from .parser import AST, caching_parser
 from .parser import parse as input_str_to_ast
 from .tags import BaseTag, Defines
 from .tags.compiler import Compiler
@@ -26,22 +26,38 @@ class TextCompiler:
         if tag_definitions:
             self.load_tags(tag_definitions)
 
-    def load_tags(self, tag_definitions: str):
+    def load_tags(self, tag_definitions: Union[str, AST]):
         """Load new tag definitions.
 
         After loaded, they will be available in all newly created blocks.
 
         Parameters
         ----------
+        tag_definitions : `Union[str, AST]`
+            String containing tag definitions or already created AST.
+        """
+        ast = tag_definitions if not isinstance(tag_definitions, str) \
+                else self.tags_to_ast(tag_definitions)
+        self.__process_ast(ast, None)
+
+    def tags_to_ast(self, tag_definitions: str) -> AST:
+        """Generate AST of tag definitions.
+
+        Parameters
+        ----------
         tag_definitions : `str`
             String containing tag definitions.
+
+        Returns
+        -------
+        `AST`
+            Abstract syntax tree of tag definitions.
         """
-        ast: List = [
+        return [
             i
             for i in caching_parser(tag_definitions)
             if type(i) is dict and i['name'] == 'defines'
         ]
-        self.__process_ast(ast, None)
 
     def process_text(
             self,

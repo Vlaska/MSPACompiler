@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='MSPACompiler',
-    version='1.2.2',
+    version='1.3.0',
     packages=find_packages(),
     include_package_data=True,
     author='Vlaska',
