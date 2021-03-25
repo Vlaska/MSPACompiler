@@ -1,6 +1,6 @@
 import json
 import re
-from typing import Collection, Dict, List, Union
+from typing import Collection, Dict, List
 
 from arpeggio import NoMatch, ParserPython, visit_parse_tree
 from fcache.cache import FileCache
@@ -57,7 +57,7 @@ def parse(text: str) -> List:
     try:
         return visit_parse_tree(parser.parse(text), Visitor())
     except NoMatch as e:
-        t = []
+        t: List[str] = []
         for i in e.rules:
             key = i.rule_name or i.to_match
             p = rules.get(key, None)

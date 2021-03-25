@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Type, Union
+from typing import Dict, List, Optional, Type, Union
 
 from loguru import logger
 
@@ -37,10 +37,11 @@ class TextCompiler:
             String containing tag definitions or already created AST.
         """
         ast = tag_definitions if not isinstance(tag_definitions, str) \
-                else self.tags_to_ast(tag_definitions)
+            else self.tags_to_ast(tag_definitions)
         self.__process_ast(ast, None)
 
-    def tags_to_ast(self, tag_definitions: str) -> AST:
+    @staticmethod
+    def tags_to_ast(tag_definitions: str) -> AST:
         """Generate AST of tag definitions.
 
         Parameters
@@ -82,7 +83,8 @@ class TextCompiler:
         `str`
             Compiled text
         """
-        tmp_tags = {} if use_tmp_tags else None
+        tmp_tags: Optional[Dict[str, Type[BaseTag]]] \
+            = {} if use_tmp_tags else None
         ast: List = input_str_to_ast(text)
         result = self.__process_ast(ast, tmp_tags)
         if use_tmp_tags:
@@ -92,7 +94,7 @@ class TextCompiler:
     def __process_ast(
             self,
             ast: List,
-            tmp_tags: Dict[str, Type[BaseTag]]
+            tmp_tags: Dict[str, Type[BaseTag]] = None
     ) -> str:
         """Recursively process abstract syntax tree to build output text
 
@@ -100,7 +102,7 @@ class TextCompiler:
         ----------
         ast : `List`
             Abstract syntax tree
-        tmp_tags : `Dict[str, Type[BaseTag]]`
+        tmp_tags : `Dict[str, Type[BaseTag]]`, optional
             Dictionary for storing temporary tags created during processing of
             current input text
 
