@@ -14,6 +14,11 @@ CACHE = FileCache(__name__)
 
 AST = List[Dict[str, Collection[Collection[str]]]]
 
+
+class ParserError(Exception):
+    pass
+
+
 rules = {
     'ws': ['spaces'],
     r'\t| ': ['spaces'],
@@ -65,10 +70,9 @@ def parse(text: str) -> List:
                 t.extend(f'"{j}"' for j in p)
             else:
                 t.append(f'"{e.to_match}"')
-        logger.critical(
-            f'Line: {e.line}, col: {e.col}. Expecting: ' + ', '.join(t)
-        )
-        raise e
+        message = f'Line: {e.line}, col: {e.col}. Expecting: ' + ', '.join(t)
+        logger.critical(message)
+        raise ParserError(message)
 
 
 def caching_parser(text: str) -> List:
